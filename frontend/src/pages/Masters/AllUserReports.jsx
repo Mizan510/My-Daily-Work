@@ -34,7 +34,9 @@ const AllUserReports = () => {
 
   const fetchAdmins = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/auth/get-admins");
+      const res = await axios.get(
+        "https://my-daily-work.onrender.com/api/auth/get-admins"
+      );
       setAdmins(res.data);
     } catch (err) {
       console.error("Admin fetch error:", err);
@@ -44,7 +46,7 @@ const AllUserReports = () => {
   const fetchUsersUnderAdmin = async (adminId) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/auth/my-users/${adminId}`
+        `https://my-daily-work.onrender.com/api/auth/my-users/${adminId}`
       );
       setUsersUnderAdmin(res.data.users || []);
     } catch (err) {
@@ -56,7 +58,7 @@ const AllUserReports = () => {
     try {
       const routes = ["A", "B", "C", "D", "E", "N"];
       const requests = routes.map((r) =>
-        axios.get(`http://localhost:5000/api/form-data${r}`)
+        axios.get(`https://my-daily-work.onrender.com/api/form-data${r}`)
       );
       const responses = await Promise.all(requests);
 
@@ -87,7 +89,8 @@ const AllUserReports = () => {
 
   const askDelete = () => {
     if (!selectedUser) return showToast("error", "Select a user first");
-    if (!startDate || !endDate) return showToast("error", "Select both start and end dates");
+    if (!startDate || !endDate)
+      return showToast("error", "Select both start and end dates");
 
     setConfirmDelete(true);
   };
@@ -98,9 +101,12 @@ const AllUserReports = () => {
       const routes = ["A", "B", "C", "D", "E", "N"];
       await Promise.all(
         routes.map((r) =>
-          axios.delete(`http://localhost:5000/api/form-data${r}/delete-by-date-range`, {
-            params: { user: selectedUser, startDate, endDate },
-          })
+          axios.delete(
+            `https://my-daily-work.onrender.com/api/form-data${r}/delete-by-date-range`,
+            {
+              params: { user: selectedUser, startDate, endDate },
+            }
+          )
         )
       );
       showToast("success", "Reports deleted successfully");
@@ -121,7 +127,8 @@ const AllUserReports = () => {
 
   const filterByUser = (reports) =>
     reports.filter(
-      (r) => r.userName?.trim().toLowerCase() === selectedUser.trim().toLowerCase()
+      (r) =>
+        r.userName?.trim().toLowerCase() === selectedUser.trim().toLowerCase()
     );
 
   return (
@@ -133,14 +140,22 @@ const AllUserReports = () => {
       {/* Admin & User Selection */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <div>
-          <label className="block text-sm font-semibold mb-1 text-gray-700">Master</label>
-          <select value={masterName} disabled className="w-full border px-3 py-2 rounded-lg bg-gray-100">
+          <label className="block text-sm font-semibold mb-1 text-gray-700">
+            Master
+          </label>
+          <select
+            value={masterName}
+            disabled
+            className="w-full border px-3 py-2 rounded-lg bg-gray-100"
+          >
             <option>{masterName}</option>
           </select>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-1 text-gray-700">Select Admin</label>
+          <label className="block text-sm font-semibold mb-1 text-gray-700">
+            Select Admin
+          </label>
           <select
             value={selectedAdmin}
             onChange={(e) => setSelectedAdmin(e.target.value)}
@@ -148,13 +163,17 @@ const AllUserReports = () => {
           >
             <option value="">-- Select Admin --</option>
             {admins.map((admin) => (
-              <option key={admin._id} value={admin._id}>{admin.name}</option>
+              <option key={admin._id} value={admin._id}>
+                {admin.name}
+              </option>
             ))}
           </select>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-1 text-gray-700">Select User Under Admin</label>
+          <label className="block text-sm font-semibold mb-1 text-gray-700">
+            Select User Under Admin
+          </label>
           <select
             value={selectedUser}
             onChange={(e) => setSelectedUser(e.target.value)}
@@ -163,7 +182,9 @@ const AllUserReports = () => {
           >
             <option value="">-- Select User --</option>
             {usersUnderAdmin.map((user) => (
-              <option key={user._id} value={user.name}>{user.name}</option>
+              <option key={user._id} value={user.name}>
+                {user.name}
+              </option>
             ))}
           </select>
         </div>
@@ -172,7 +193,9 @@ const AllUserReports = () => {
       {/* Delete by Date Range */}
       {selectedUser && (
         <div className="mb-10 bg-red-50 p-5 rounded-lg border border-red-300">
-          <h3 className="text-xl font-bold mb-3 text-red-700">Delete Reports by Date Range</h3>
+          <h3 className="text-xl font-bold mb-3 text-red-700">
+            Delete Reports by Date Range
+          </h3>
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <input
               type="date"
@@ -199,7 +222,10 @@ const AllUserReports = () => {
       {/* Confirmation Dialog */}
       {confirmDelete && (
         <div className="fixed bottom-10 right-10 bg-red-600 text-white p-5 rounded-lg shadow-lg z-50 flex flex-col gap-3">
-          <p>Are you sure you want to delete reports for {selectedUser} from {startDate} to {endDate}?</p>
+          <p>
+            Are you sure you want to delete reports for {selectedUser} from{" "}
+            {startDate} to {endDate}?
+          </p>
           <div className="flex gap-2">
             <button
               onClick={confirmDeleteAction}
@@ -233,22 +259,40 @@ const AllUserReports = () => {
       {selectedUser ? (
         <div className="space-y-6">
           {filterByUser(allReports.A).length > 0 && (
-            <UserReportA loggedInUser={selectedUser} allReports={filterByUser(allReports.A)} />
+            <UserReportA
+              loggedInUser={selectedUser}
+              allReports={filterByUser(allReports.A)}
+            />
           )}
           {filterByUser(allReports.B).length > 0 && (
-            <UserReportB loggedInUser={selectedUser} allReports={filterByUser(allReports.B)} />
+            <UserReportB
+              loggedInUser={selectedUser}
+              allReports={filterByUser(allReports.B)}
+            />
           )}
           {filterByUser(allReports.C).length > 0 && (
-            <UserReportC loggedInUser={selectedUser} allReports={filterByUser(allReports.C)} />
+            <UserReportC
+              loggedInUser={selectedUser}
+              allReports={filterByUser(allReports.C)}
+            />
           )}
           {filterByUser(allReports.D).length > 0 && (
-            <UserReportD loggedInUser={selectedUser} allReports={filterByUser(allReports.D)} />
+            <UserReportD
+              loggedInUser={selectedUser}
+              allReports={filterByUser(allReports.D)}
+            />
           )}
           {filterByUser(allReports.E).length > 0 && (
-            <UserReportE loggedInUser={selectedUser} allReports={filterByUser(allReports.E)} />
+            <UserReportE
+              loggedInUser={selectedUser}
+              allReports={filterByUser(allReports.E)}
+            />
           )}
           {filterByUser(allReports.N).length > 0 && (
-            <UserReportN loggedInUser={selectedUser} allReports={filterByUser(allReports.N)} />
+            <UserReportN
+              loggedInUser={selectedUser}
+              allReports={filterByUser(allReports.N)}
+            />
           )}
         </div>
       ) : (

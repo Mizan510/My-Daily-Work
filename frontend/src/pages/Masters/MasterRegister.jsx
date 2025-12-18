@@ -9,7 +9,7 @@ export default function MasterRegister() {
     email: "",
     password: "",
     role: "admin",
-    assignedForm: ""
+    assignedForm: "",
   };
 
   const [form, setForm] = useState(initialState);
@@ -31,11 +31,14 @@ export default function MasterRegister() {
     setLoading(true); // 🟦 START SPINNER
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register-admin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const response = await fetch(
+        "https://my-daily-work.onrender.com/api/auth/register-admin",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
+      );
 
       const data = await response.json();
 
@@ -47,7 +50,6 @@ export default function MasterRegister() {
 
       setSuccess("Admin registered successfully!");
       setForm(initialState);
-
     } catch (err) {
       setError("Server error. Try again.");
     }
@@ -58,7 +60,6 @@ export default function MasterRegister() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-lg">
-
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
           Master Register for Admin Registration
         </h1>
@@ -79,10 +80,11 @@ export default function MasterRegister() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-
           {/* NAME */}
           <div>
-            <label className="block mb-1 text-gray-600 font-medium">Admin Name</label>
+            <label className="block mb-1 text-gray-600 font-medium">
+              Admin Name
+            </label>
             <input
               type="text"
               name="name"
@@ -96,7 +98,9 @@ export default function MasterRegister() {
 
           {/* EMAIL */}
           <div>
-            <label className="block mb-1 text-gray-600 font-medium">Admin Email</label>
+            <label className="block mb-1 text-gray-600 font-medium">
+              Admin Email
+            </label>
             <input
               type="email"
               name="email"
@@ -110,7 +114,9 @@ export default function MasterRegister() {
 
           {/* PASSWORD */}
           <div>
-            <label className="block mb-1 text-gray-600 font-medium">Password</label>
+            <label className="block mb-1 text-gray-600 font-medium">
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -149,7 +155,11 @@ export default function MasterRegister() {
             type="submit"
             disabled={loading}
             className={`w-full p-3 rounded-xl text-lg font-semibold transition
-              ${loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+              ${
+                loading
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700 text-white"
+              }`}
           >
             {loading ? (
               <div className="flex items-center justify-center gap-2">

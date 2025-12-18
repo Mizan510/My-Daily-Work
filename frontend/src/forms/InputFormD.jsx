@@ -22,7 +22,9 @@ const InputFormD = () => {
   // Fetch all reports
   const fetchReports = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/form-datad");
+      const res = await axios.get(
+        "https://my-daily-work.onrender.com/api/form-datad"
+      );
       setAllReports(res.data);
 
       // Check if user already submitted today
@@ -40,38 +42,38 @@ const InputFormD = () => {
   };
 
   // inside your component
-useEffect(() => {
-  if (loggedInUser) fetchReports();
-}, [loggedInUser]);
+  useEffect(() => {
+    if (loggedInUser) fetchReports();
+  }, [loggedInUser]);
 
-const handleChange = (e) =>
-  setFormDataD({ ...FormDataD, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setFormDataD({ ...FormDataD, [e.target.name]: e.target.value });
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!loggedInUser) return toast.error("Logged-in user not detected!");
-  if (alreadySubmitted) {
-    toast.error("You have already submitted today's report!");
-    return;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!loggedInUser) return toast.error("Logged-in user not detected!");
+    if (alreadySubmitted) {
+      toast.error("You have already submitted today's report!");
+      return;
+    }
 
-  setIsLoading(true); // Start loading
+    setIsLoading(true); // Start loading
 
-  try {
-    await axios.post("http://localhost:5000/api/form-datad", {
-      ...FormDataD,
-      userName: loggedInUser,
-    });
-    toast.success("Report submitted successfully!"); // <-- Custom toast
-    setFormDataD(initialState); // Reset form
-    fetchReports(); // refresh reports & submission lock
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to submit report"); // <-- Custom toast
-  } finally {
-    setIsLoading(false); // Stop loading
-  }
-};
+    try {
+      await axios.post("https://my-daily-work.onrender.com/api/form-datad", {
+        ...FormDataD,
+        userName: loggedInUser,
+      });
+      toast.success("Report submitted successfully!"); // <-- Custom toast
+      setFormDataD(initialState); // Reset form
+      fetchReports(); // refresh reports & submission lock
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to submit report"); // <-- Custom toast
+    } finally {
+      setIsLoading(false); // Stop loading
+    }
+  };
 
   return (
     <div className="p-4 w-full max-w-5xl mx-auto border rounded shadow mt-4">

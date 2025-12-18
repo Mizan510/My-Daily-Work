@@ -31,12 +31,12 @@ const MyUserReports = () => {
   const fetchReports = async () => {
     try {
       const [a, b, c, d, e, n] = await Promise.all([
-        axios.get("http://localhost:5000/api/form-dataa"),
-        axios.get("http://localhost:5000/api/form-datab"),
-        axios.get("http://localhost:5000/api/form-datac"),
-        axios.get("http://localhost:5000/api/form-datad"),
-        axios.get("http://localhost:5000/api/form-datae"),
-        axios.get("http://localhost:5000/api/form-datan"),
+        axios.get("https://my-daily-work.onrender.com/api/form-dataa"),
+        axios.get("https://my-daily-work.onrender.com/api/form-datab"),
+        axios.get("https://my-daily-work.onrender.com/api/form-datac"),
+        axios.get("https://my-daily-work.onrender.com/api/form-datad"),
+        axios.get("https://my-daily-work.onrender.com/api/form-datae"),
+        axios.get("https://my-daily-work.onrender.com/api/form-datan"),
       ]);
 
       setAllReports({
@@ -60,7 +60,7 @@ const MyUserReports = () => {
       if (!adminId) return;
 
       const res = await axios.get(
-        `http://localhost:5000/api/auth/my-users/${adminId}`
+        `https://my-daily-work.onrender.com/api/auth/my-users/${adminId}`
       );
       setUsersUnderAdmin(res.data.users || []);
     } catch (err) {

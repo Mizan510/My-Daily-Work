@@ -41,7 +41,9 @@ export default function AllAdminControl() {
   async function getAdmins() {
     setLoadingAdmins(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/get-admins");
+      const res = await fetch(
+        "https://my-daily-work.onrender.com/api/auth/get-admins"
+      );
       const data = await res.json();
       setAdmins(data);
     } catch (err) {
@@ -54,7 +56,9 @@ export default function AllAdminControl() {
   async function getUsers() {
     setLoadingUsers(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/get-users");
+      const res = await fetch(
+        "https://my-daily-work.onrender.com/api/auth/get-users"
+      );
       const data = await res.json();
       setUsers(data);
     } catch (err) {
@@ -68,7 +72,10 @@ export default function AllAdminControl() {
   async function deleteAdmin(id) {
     setLoadingAction((prev) => ({ ...prev, [id + "_deleteAdmin"]: true }));
     try {
-      const res = await fetch(`http://localhost:5000/api/auth/delete-admin/${id}`, { method: "DELETE" });
+      const res = await fetch(
+        `https://my-daily-work.onrender.com/api/auth/delete-admin/${id}`,
+        { method: "DELETE" }
+      );
       if (res.ok) {
         setToast({ type: "success", message: "Admin deleted successfully" });
         getAdmins();
@@ -87,7 +94,10 @@ export default function AllAdminControl() {
   async function deleteUser(id) {
     setLoadingAction((prev) => ({ ...prev, [id + "_deleteUser"]: true }));
     try {
-      const res = await fetch(`http://localhost:5000/api/auth/delete-user/${id}`, { method: "DELETE" });
+      const res = await fetch(
+        `https://my-daily-work.onrender.com/api/auth/delete-user/${id}`,
+        { method: "DELETE" }
+      );
       if (res.ok) {
         setToast({ type: "success", message: "User deleted successfully" });
         getUsers();
@@ -106,7 +116,10 @@ export default function AllAdminControl() {
   async function toggleAdminActive(id) {
     setLoadingAction((prev) => ({ ...prev, [id + "_toggleAdmin"]: true }));
     try {
-      const res = await fetch(`http://localhost:5000/api/auth/toggle-admin-active/${id}`, { method: "PUT" });
+      const res = await fetch(
+        `https://my-daily-work.onrender.com/api/auth/toggle-admin-active/${id}`,
+        { method: "PUT" }
+      );
       if (res.ok) getAdmins();
     } finally {
       setLoadingAction((prev) => ({ ...prev, [id + "_toggleAdmin"]: false }));
@@ -117,7 +130,10 @@ export default function AllAdminControl() {
   async function toggleUserActive(id) {
     setLoadingAction((prev) => ({ ...prev, [id + "_toggleUser"]: true }));
     try {
-      const res = await fetch(`http://localhost:5000/api/auth/toggle-user-active/${id}`, { method: "PUT" });
+      const res = await fetch(
+        `https://my-daily-work.onrender.com/api/auth/toggle-user-active/${id}`,
+        { method: "PUT" }
+      );
       if (res.ok) getUsers();
     } finally {
       setLoadingAction((prev) => ({ ...prev, [id + "_toggleUser"]: false }));
@@ -140,9 +156,18 @@ export default function AllAdminControl() {
       ];
       sheet.getRow(1).eachCell((cell) => {
         cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
-        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1F4E79" } };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF1F4E79" },
+        };
         cell.alignment = { vertical: "middle", horizontal: "center" };
-        cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
       });
       admins.forEach((a) => {
         const row = sheet.addRow({
@@ -153,7 +178,12 @@ export default function AllAdminControl() {
           status: a.isActive ? "Active" : "Inactive",
         });
         row.eachCell((cell) => {
-          cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
+          cell.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
           cell.alignment = { vertical: "middle", horizontal: "center" };
         });
       });
@@ -181,9 +211,18 @@ export default function AllAdminControl() {
       ];
       sheet.getRow(1).eachCell((cell) => {
         cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
-        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1F4E79" } };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF1F4E79" },
+        };
         cell.alignment = { vertical: "middle", horizontal: "center" };
-        cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
       });
       users.forEach((u) => {
         const row = sheet.addRow({
@@ -195,7 +234,12 @@ export default function AllAdminControl() {
           status: u.isActive ? "Active" : "Inactive",
         });
         row.eachCell((cell) => {
-          cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
+          cell.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
           cell.alignment = { vertical: "middle", horizontal: "center" };
         });
       });
@@ -226,7 +270,9 @@ export default function AllAdminControl() {
         onClick={exportAdminsExcel}
         disabled={loadingExportAdmins}
         className={`mb-3 px-4 py-2 rounded ${
-          loadingExportAdmins ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 text-white"
+          loadingExportAdmins
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-green-600 hover:bg-green-700 text-white"
         }`}
       >
         {loadingExportAdmins ? "Exporting..." : "Export Admins to Excel"}
@@ -247,7 +293,9 @@ export default function AllAdminControl() {
           <tbody>
             {loadingAdmins ? (
               <tr>
-                <td colSpan="6" className="text-center p-3">Loading admins...</td>
+                <td colSpan="6" className="text-center p-3">
+                  Loading admins...
+                </td>
               </tr>
             ) : admins.length ? (
               admins.map((admin) => (
@@ -256,30 +304,54 @@ export default function AllAdminControl() {
                   <td className="p-3 border">{admin.email}</td>
                   <td className="p-3 border">{formatBD(admin.createdAt)}</td>
                   <td className="p-3 border">{formatBD(admin.updatedAt)}</td>
-                  <td className="p-3 border text-center">{admin.isActive ? "Active" : "Inactive"}</td>
+                  <td className="p-3 border text-center">
+                    {admin.isActive ? "Active" : "Inactive"}
+                  </td>
                   <td className="p-3 border text-center flex justify-center gap-2">
                     <button
-                      onClick={() => setConfirmDelete({ id: admin._id, type: "admin", actionType: "toggle" })}
+                      onClick={() =>
+                        setConfirmDelete({
+                          id: admin._id,
+                          type: "admin",
+                          actionType: "toggle",
+                        })
+                      }
                       disabled={loadingAction[admin._id + "_toggleAdmin"]}
                       className={`px-3 py-1 rounded ${
-                        admin.isActive ? "bg-red-500 text-white" : "bg-green-500 text-white"
+                        admin.isActive
+                          ? "bg-red-500 text-white"
+                          : "bg-green-500 text-white"
                       }`}
                     >
-                      {loadingAction[admin._id + "_toggleAdmin"] ? "Processing..." : admin.isActive ? "Deactivate" : "Activate"}
+                      {loadingAction[admin._id + "_toggleAdmin"]
+                        ? "Processing..."
+                        : admin.isActive
+                        ? "Deactivate"
+                        : "Activate"}
                     </button>
                     <button
-                      onClick={() => setConfirmDelete({ id: admin._id, type: "admin", actionType: "delete" })}
+                      onClick={() =>
+                        setConfirmDelete({
+                          id: admin._id,
+                          type: "admin",
+                          actionType: "delete",
+                        })
+                      }
                       disabled={loadingAction[admin._id + "_deleteAdmin"]}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
-                      {loadingAction[admin._id + "_deleteAdmin"] ? "Deleting..." : "Delete"}
+                      {loadingAction[admin._id + "_deleteAdmin"]
+                        ? "Deleting..."
+                        : "Delete"}
                     </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td className="p-3 border text-center" colSpan="6">No admins found</td>
+                <td className="p-3 border text-center" colSpan="6">
+                  No admins found
+                </td>
               </tr>
             )}
           </tbody>
@@ -292,7 +364,9 @@ export default function AllAdminControl() {
         onClick={exportUsersExcel}
         disabled={loadingExportUsers}
         className={`mb-3 px-4 py-2 rounded ${
-          loadingExportUsers ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 text-white"
+          loadingExportUsers
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-green-600 hover:bg-green-700 text-white"
         }`}
       >
         {loadingExportUsers ? "Exporting..." : "Export Users to Excel"}
@@ -314,40 +388,68 @@ export default function AllAdminControl() {
           <tbody>
             {loadingUsers ? (
               <tr>
-                <td colSpan="7" className="text-center p-3">Loading users...</td>
+                <td colSpan="7" className="text-center p-3">
+                  Loading users...
+                </td>
               </tr>
             ) : users.length ? (
               users.map((user) => (
                 <tr key={user._id}>
                   <td className="p-3 border">{user.name}</td>
                   <td className="p-3 border">{user.email}</td>
-                  <td className="p-3 border">{user.createdBy ? user.createdBy.name : "Master Admin"}</td>
+                  <td className="p-3 border">
+                    {user.createdBy ? user.createdBy.name : "Master Admin"}
+                  </td>
                   <td className="p-3 border">{formatBD(user.createdAt)}</td>
                   <td className="p-3 border">{formatBD(user.updatedAt)}</td>
-                  <td className="p-3 border text-center">{user.isActive ? "Active" : "Inactive"}</td>
+                  <td className="p-3 border text-center">
+                    {user.isActive ? "Active" : "Inactive"}
+                  </td>
                   <td className="p-3 border text-center flex justify-center gap-2">
                     <button
-                      onClick={() => setConfirmDelete({ id: user._id, type: "user", actionType: "toggle" })}
+                      onClick={() =>
+                        setConfirmDelete({
+                          id: user._id,
+                          type: "user",
+                          actionType: "toggle",
+                        })
+                      }
                       disabled={loadingAction[user._id + "_toggleUser"]}
                       className={`px-3 py-1 rounded ${
-                        user.isActive ? "bg-red-500 text-white" : "bg-green-500 text-white"
+                        user.isActive
+                          ? "bg-red-500 text-white"
+                          : "bg-green-500 text-white"
                       }`}
                     >
-                      {loadingAction[user._id + "_toggleUser"] ? "Processing..." : user.isActive ? "Deactivate" : "Activate"}
+                      {loadingAction[user._id + "_toggleUser"]
+                        ? "Processing..."
+                        : user.isActive
+                        ? "Deactivate"
+                        : "Activate"}
                     </button>
                     <button
-                      onClick={() => setConfirmDelete({ id: user._id, type: "user", actionType: "delete" })}
+                      onClick={() =>
+                        setConfirmDelete({
+                          id: user._id,
+                          type: "user",
+                          actionType: "delete",
+                        })
+                      }
                       disabled={loadingAction[user._id + "_deleteUser"]}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
-                      {loadingAction[user._id + "_deleteUser"] ? "Deleting..." : "Delete"}
+                      {loadingAction[user._id + "_deleteUser"]
+                        ? "Deleting..."
+                        : "Delete"}
                     </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td className="p-3 border text-center" colSpan="7">No users found</td>
+                <td className="p-3 border text-center" colSpan="7">
+                  No users found
+                </td>
               </tr>
             )}
           </tbody>
@@ -358,7 +460,10 @@ export default function AllAdminControl() {
       {confirmDelete && (
         <div className="fixed bottom-10 right-10 bg-red-600 text-white p-5 rounded-lg shadow-lg z-50 flex flex-col gap-3">
           <p>
-            Are you sure you want to {confirmDelete.actionType === "delete" ? "delete" : "toggle status of"} 
+            Are you sure you want to{" "}
+            {confirmDelete.actionType === "delete"
+              ? "delete"
+              : "toggle status of"}
             {confirmDelete.type === "admin" ? " this admin" : " this user"}?
           </p>
           <div className="flex gap-2">
