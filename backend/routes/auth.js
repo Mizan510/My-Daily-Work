@@ -58,7 +58,7 @@ router.post("/login", async (req, res) => {
     if (user.isActive === false) {
       return res.status(403).json({
         message:
-          "Your subscription has expired. For Re-NEW contact with us by Email: \nsmartworkalltime@gmail.com",
+          "Your subscription has expired. For Re-NEW Plz contact: \nsmartworkalltime@gmail.com",
         inactive: true,
       });
     }

@@ -21,7 +21,9 @@ const ContactPage = () => {
           <p className="text-gray-700 text-center text-sm sm:text-base">
             📩{" "}
             <span className="font-semibold  text-xl text-gray-800">Email:</span>{" "}
-            <span className="text-blue-600 text-2xl">smartworkalltime@gmail.com</span>
+            <span className="block text-center text-blue-600 text-sm sm:text-base md:text-xl break-all">
+              smartworkalltime@gmail.com
+            </span>
           </p>
         </div>
 
