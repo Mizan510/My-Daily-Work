@@ -19,7 +19,6 @@ IF I add, delete, update any field, than must update in...
 finnaly find if any previous text exits...
 
 
-// master pass is in ProtectedRoute.jsx
 
 
 git add .
