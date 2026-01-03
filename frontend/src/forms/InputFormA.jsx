@@ -46,6 +46,58 @@ const InputFormA = () => {
     if (loggedInUser) fetchReports();
   }, [loggedInUser]);
 
+  // Auto-calculate Total Rx Forecast
+  useEffect(() => {
+    const totalRxForecast =
+      Number(FormDataA.opdRxForecast || 0) +
+      Number(FormDataA.gpRxForecast || 0) +
+      Number(FormDataA.dischargeRxForecast || 0);
+    setFormDataA((prev) => ({ ...prev, totalRxForecast }));
+  }, [
+    FormDataA.opdRxForecast,
+    FormDataA.gpRxForecast,
+    FormDataA.dischargeRxForecast,
+  ]);
+
+  // Auto-calculate Total Basket And New Product Rx
+  useEffect(() => {
+    const totalBasketAndNewProductRx =
+      Number(FormDataA.totalStrategicBasketRx || 0) +
+      Number(FormDataA.totalFocusBasketRx || 0) +
+      Number(FormDataA.totalEmergingBasketRx || 0) +
+      Number(FormDataA.totalNewProductRx || 0);
+    setFormDataA((prev) => ({ ...prev, totalBasketAndNewProductRx }));
+  }, [
+    FormDataA.totalStrategicBasketRx,
+    FormDataA.totalFocusBasketRx,
+    FormDataA.totalEmergingBasketRx,
+    FormDataA.totalNewProductRx,
+  ]);
+
+  // Auto-calculate Total Rxs
+  useEffect(() => {
+    const totalRxs =
+      Number(FormDataA.opdRx || 0) +
+      Number(FormDataA.dischargeRx || 0) +
+      Number(FormDataA.gpRx || 0);
+    setFormDataA((prev) => ({ ...prev, totalRxs }));
+  }, [FormDataA.opdRx, FormDataA.dischargeRx, FormDataA.gpRx]);
+
+  // Auto-calculate SBU-A Rx Without Basket And New Product Rx
+  useEffect(() => {
+    const sbuaRxWithoutBasketAndNewProductRx =
+      (FormDataA.totalRxs || 0) - (FormDataA.totalBasketAndNewProductRx || 0);
+    setFormDataA((prev) => ({ ...prev, sbuaRxWithoutBasketAndNewProductRx }));
+  }, [FormDataA.totalRxs, FormDataA.totalBasketAndNewProductRx]);
+
+  // Auto-calculate Not Giving Order
+  useEffect(() => {
+    const noOfNotGivingOrderParty =
+      Number(FormDataA.noOfPartySbuaOrderRoute || 0) -
+      Number(FormDataA.noOfCollectedOrderSbua || 0);
+    setFormDataA((prev) => ({ ...prev, noOfNotGivingOrderParty }));
+  }, [FormDataA.noOfPartySbuaOrderRoute, FormDataA.noOfCollectedOrderSbua]);
+
   const handleChange = (e) =>
     setFormDataA({ ...FormDataA, [e.target.name]: e.target.value });
 

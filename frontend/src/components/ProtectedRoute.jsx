@@ -38,7 +38,7 @@ export default function ProtectedRoute({ children, requireAccessCode }) {
 
             <button
               onClick={() => {
-                if (input === "11221122") {
+                if (input === "1") {
                   setVerified(true);
                 } else {
                   alert("❌ Incorrect code");

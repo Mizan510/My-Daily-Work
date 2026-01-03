@@ -44,6 +44,57 @@ const InputFormN = () => {
   useEffect(() => {
     if (loggedInUser) fetchReports();
   }, [loggedInUser]);
+  // Auto-calculate Total Rx Forecast
+  useEffect(() => {
+    const totalRxForecast =
+      Number(FormDataN.opdRxForecast || 0) +
+      Number(FormDataN.gpRxForecast || 0) +
+      Number(FormDataN.dischargeRxForecast || 0);
+    setFormDataN((prev) => ({ ...prev, totalRxForecast }));
+  }, [
+    FormDataN.opdRxForecast,
+    FormDataN.gpRxForecast,
+    FormDataN.dischargeRxForecast,
+  ]);
+
+  // Auto-calculate Total Basket And New Product Rx
+  useEffect(() => {
+    const totalBasketAndNewProductRx =
+      Number(FormDataN.totalStrategicBasketRx || 0) +
+      Number(FormDataN.totalFocusBasketRx || 0) +
+      Number(FormDataN.totalEmergingBasketRx || 0) +
+      Number(FormDataN.totalNewProductRx || 0);
+    setFormDataN((prev) => ({ ...prev, totalBasketAndNewProductRx }));
+  }, [
+    FormDataN.totalStrategicBasketRx,
+    FormDataN.totalFocusBasketRx,
+    FormDataN.totalEmergingBasketRx,
+    FormDataN.totalNewProductRx,
+  ]);
+
+  // Auto-calculate Total Rxs
+  useEffect(() => {
+    const totalRxs =
+      Number(FormDataN.opdRx || 0) +
+      Number(FormDataN.dischargeRx || 0) +
+      Number(FormDataN.gpRx || 0);
+    setFormDataN((prev) => ({ ...prev, totalRxs }));
+  }, [FormDataN.opdRx, FormDataN.dischargeRx, FormDataN.gpRx]);
+
+  // Auto-calculate SBU-N Rx Without Basket And New Product Rx
+  useEffect(() => {
+    const sbunRxWithoutBasketAndNewProductRx =
+      (FormDataN.totalRxs || 0) - (FormDataN.totalBasketAndNewProductRx || 0);
+    setFormDataN((prev) => ({ ...prev, sbunRxWithoutBasketAndNewProductRx }));
+  }, [FormDataN.totalRxs, FormDataN.totalBasketAndNewProductRx]);
+
+  // Auto-calculate No. of Not Giving Order Party
+  useEffect(() => {
+    const noOfNotGivingOrderParty =
+      Number(FormDataN.noOfPartySbunOrderRoute || 0) -
+      Number(FormDataN.noOfCollectedOrderSbun || 0);
+    setFormDataN((prev) => ({ ...prev, noOfNotGivingOrderParty }));
+  }, [FormDataN.noOfPartySbunOrderRoute, FormDataN.noOfCollectedOrderSbun]);
 
   const handleChange = (e) =>
     setFormDataN({ ...FormDataN, [e.target.name]: e.target.value });

@@ -45,7 +45,57 @@ const InputFormD = () => {
   useEffect(() => {
     if (loggedInUser) fetchReports();
   }, [loggedInUser]);
+  // Auto-calculate Total Rx Forecast
+  useEffect(() => {
+    const totalRxForecast =
+      Number(FormDataD.opdRxForecast || 0) +
+      Number(FormDataD.gpRxForecast || 0) +
+      Number(FormDataD.dischargeRxForecast || 0);
+    setFormDataD((prev) => ({ ...prev, totalRxForecast }));
+  }, [
+    FormDataD.opdRxForecast,
+    FormDataD.gpRxForecast,
+    FormDataD.dischargeRxForecast,
+  ]);
 
+  // Auto-calculate Total Basket And New Product Rx
+  useEffect(() => {
+    const totalBasketAndNewProductRx =
+      Number(FormDataD.totalStrategicBasketRx || 0) +
+      Number(FormDataD.totalFocusBasketRx || 0) +
+      Number(FormDataD.totalEmergingBasketRx || 0) +
+      Number(FormDataD.totalNewProductRx || 0);
+    setFormDataD((prev) => ({ ...prev, totalBasketAndNewProductRx }));
+  }, [
+    FormDataD.totalStrategicBasketRx,
+    FormDataD.totalFocusBasketRx,
+    FormDataD.totalEmergingBasketRx,
+    FormDataD.totalNewProductRx,
+  ]);
+
+  // Auto-calculate Total Rxs
+  useEffect(() => {
+    const totalRxs =
+      Number(FormDataD.opdRx || 0) +
+      Number(FormDataD.dischargeRx || 0) +
+      Number(FormDataD.gpRx || 0);
+    setFormDataD((prev) => ({ ...prev, totalRxs }));
+  }, [FormDataD.opdRx, FormDataD.dischargeRx, FormDataD.gpRx]);
+
+  // Auto-calculate SBU-D Rx Without Basket And New Product Rx
+  useEffect(() => {
+    const sbudRxWithoutBasketAndNewProductRx =
+      (FormDataD.totalRxs || 0) - (FormDataD.totalBasketAndNewProductRx || 0);
+    setFormDataD((prev) => ({ ...prev, sbudRxWithoutBasketAndNewProductRx }));
+  }, [FormDataD.totalRxs, FormDataD.totalBasketAndNewProductRx]);
+
+  // Auto-calculate Not Giving Order
+  useEffect(() => {
+    const noOfNotGivingOrderParty =
+      Number(FormDataD.noOfPartySbudOrderRoute || 0) -
+      Number(FormDataD.noOfCollectedOrderSbud || 0);
+    setFormDataD((prev) => ({ ...prev, noOfNotGivingOrderParty }));
+  }, [FormDataD.noOfPartySbudOrderRoute, FormDataD.noOfCollectedOrderSbud]);
   const handleChange = (e) =>
     setFormDataD({ ...FormDataD, [e.target.name]: e.target.value });
 

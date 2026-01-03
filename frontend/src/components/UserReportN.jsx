@@ -92,50 +92,76 @@ const UserReportN = ({ loggedInUser, allReports, usersUnderAdmin }) => {
   };
 
   // --------------------
-  // Map field keys to readable headers
+  // Map field keys → human-readable headers
   // --------------------
   const headerMap = {
+    // Forecast Section
     salesForecast: "Sales Forecast",
     strategicRxForecast: "Strategic Rx Forecast",
     focusRxForecast: "Focus Rx Forecast",
+    emergingRxForecast: "Emerging Rx Forecast",
     newProductRxForecast: "New Product Rx Forecast",
     opdRxForecast: "OPD Rx Forecast",
     gpRxForecast: "GP Rx Forecast",
     dischargeRxForecast: "Discharge Rx Forecast",
+    totalRxForecast: "Total Rx Forecast",
 
-    totalStrategicRx: "Total Strategic Rx",
-    totalFocusRx: "Total Focus Rx",
+    // Rx Section
+    totalStrategicBasketRx: "Total Strategic Basket Rx",
+    totalFocusBasketRx: "Total Focus Basket Rx",
+    totalEmergingBasketRx: "Total Emerging Basket Rx",
     totalNewProductRx: "Total New Product Rx",
-    otherProductsRxSBUN: "Other Products Rx SBUN",
-    totalRxs: "Total Rxs",
+    totalBasketAndNewProductRx: "Total Basket And New Product Rx",
     opdRx: "OPD Rx",
     dischargeRx: "Discharge Rx",
     gpRx: "GP Rx",
+    sbunRxWithoutBasketAndNewProductRx:
+      "SBU-N Rx Without Basket And New Product Rx",
+    totalRxs: "Total Rxs",
 
-    SBUNOrderRouteName: "SBU N Order Route Name",
-    noOfPartySBUNOrderRoute: "No Of Party SBU N Order Route",
-    noOfCollectedOrderSBUN: "No Of Collected Order SBU N",
+    // Order Section
+    sbunOrderRouteName: "SBU N Order Route Name",
+    noOfPartySbunOrderRoute: "No Of Party SBU N Order Route",
+    noOfCollectedOrderSbun: "No Of Collected Order SBU N",
     noOfNotGivingOrderParty: "No Of Not Giving Order Party",
     causeOfNotGivingOrder: "Cause Of Not Giving Order",
     marketTotalOrder: "Market Total Order",
+
+    // Strategic Basket Orders
+    entacydPlusOrder: "Entacyd Plus Order",
     probioOrder: "Probio Order",
-    flemoMaxOrder: "Flemo Max Order",
+    flemoOrder: "Flemo Order",
+    resQOrder: "Res-Q Order",
+
+    // Focus Basket Orders
+    ceevitOrder: "Ceevit Order",
+    alatrolOrder: "Alatrol Order",
+    adovasOrder: "Adovas Order",
+
+    // Emerging Basket Orders
+    gilobaOrder: "Giloba Order",
+    trumegaOrder: "Trumega Order",
+    maximilkOrder: "Maximilk Order",
+    biopremOrder: "Bioprem Order",
+
+    // New Product Orders
     newProductOrder: "New Product Order",
 
+    // Survey Section
     rxSendInDIDS: "Rx Send In DIDS",
     writtenRxInSurveyPad: "Written Rx In Survey Pad",
     indoorSurvey: "Indoor Survey",
   };
 
   // --------------------
-  // Identify dynamic fields for table & Excel
+  // Dynamic fields for table & Excel
   // --------------------
   const dynamicFields = records[0]
     ? Object.keys(records[0]).filter((k) => k !== "_id" && k !== "userId")
     : [];
 
   // --------------------
-  // Identify numeric fields & calculate totals
+  // Numeric fields & totals
   // --------------------
   const numericFields = [];
   const totals = {};
@@ -151,7 +177,7 @@ const UserReportN = ({ loggedInUser, allReports, usersUnderAdmin }) => {
   }
 
   // --------------------
-  // Excel Sections & color codes
+  // Excel Sections with colors
   // --------------------
   const sections = [
     {
@@ -161,44 +187,62 @@ const UserReportN = ({ loggedInUser, allReports, usersUnderAdmin }) => {
         "salesForecast",
         "strategicRxForecast",
         "focusRxForecast",
+        "emergingRxForecast",
         "newProductRxForecast",
         "opdRxForecast",
         "gpRxForecast",
         "dischargeRxForecast",
+        "totalRxForecast",
       ],
     },
-
     {
       title: "Rx Section",
       color: "90EE90",
       fields: [
-        "totalStrategicRx",
-        "totalFocusRx",
+        "totalStrategicBasketRx",
+        "totalFocusBasketRx",
+        "totalEmergingBasketRx",
         "totalNewProductRx",
-        "otherProductsRxSBUN",
-        "totalRxs",
+        "totalBasketAndNewProductRx",
         "opdRx",
         "dischargeRx",
         "gpRx",
+        "sbunRxWithoutBasketAndNewProductRx",
+        "totalRxs",
       ],
     },
-
     {
       title: "Order Section",
       color: "87CEEB",
       fields: [
-        "SBUNOrderRouteName",
-        "noOfPartySBUNOrderRoute",
-        "noOfCollectedOrderSBUN",
+        "sbunOrderRouteName",
+        "noOfPartySbunOrderRoute",
+        "noOfCollectedOrderSbun",
         "noOfNotGivingOrderParty",
         "causeOfNotGivingOrder",
         "marketTotalOrder",
-        "probioOrder",
-        "flemoMaxOrder",
-        "newProductOrder",
       ],
     },
-
+    {
+      title: "Strategic Basket Orders",
+      color: "FFD700",
+      fields: ["entacydPlusOrder", "probioOrder", "flemoOrder", "resQOrder"],
+    },
+    {
+      title: "Focus Basket Orders",
+      color: "FFA500",
+      fields: ["ceevitOrder", "alatrolOrder", "adovasOrder"],
+    },
+    {
+      title: "Emerging Basket Orders",
+      color: "90EE90",
+      fields: ["gilobaOrder", "trumegaOrder", "maximilkOrder", "biopremOrder"],
+    },
+    {
+      title: "New Product Orders",
+      color: "AFB500",
+      fields: ["newProductOrder"],
+    },
     {
       title: "Survey Section",
       color: "FFB6C1",
@@ -309,7 +353,7 @@ const UserReportN = ({ loggedInUser, allReports, usersUnderAdmin }) => {
 
     // Define text-only fields to skip in totals
     const textFields = [
-      "sbuNOrderRouteName",
+      "sbunOrderRouteName",
       "causeOfNotGivingOrder",
       "indoorSurvey",
     ];

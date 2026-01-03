@@ -50,35 +50,36 @@ const UserReportB = ({ loggedInUser, allReports, usersUnderAdmin }) => {
     const e = new Date(end);
     e.setHours(23, 59, 59, 999);
 
-  const filtered = allReports.filter((r) => {
-    // Convert createdAt to Dhaka time
-    const created = new Date(
-      new Date(r.createdAt).toLocaleString("en-US", { timeZone: "Asia/Dhaka" })
-    );
-
-    // Date filter
-    if (created < s || created > e) return false;
-
-    // Trim and lowercase for safe comparison
-    const reportUser = r.userName?.trim().toLowerCase();
-    const selectedUserLower = loggedInUser?.trim().toLowerCase();
-
-    if (loggedInUser) {
-      // Specific user selected
-      return reportUser === selectedUserLower;
-    } else {
-      // No user selected → include all users under admin
-      if (!usersUnderAdmin || !Array.isArray(usersUnderAdmin)) return false;
-      return usersUnderAdmin.some(
-        (u) => u.name?.trim().toLowerCase() === reportUser
+    const filtered = allReports.filter((r) => {
+      // Convert createdAt to Dhaka time
+      const created = new Date(
+        new Date(r.createdAt).toLocaleString("en-US", {
+          timeZone: "Asia/Dhaka",
+        })
       );
-    }
-  });
 
-  setRecords(filtered);
-  setLoading(false);
-};
+      // Date filter
+      if (created < s || created > e) return false;
 
+      // Trim and lowercase for safe comparison
+      const reportUser = r.userName?.trim().toLowerCase();
+      const selectedUserLower = loggedInUser?.trim().toLowerCase();
+
+      if (loggedInUser) {
+        // Specific user selected
+        return reportUser === selectedUserLower;
+      } else {
+        // No user selected → include all users under admin
+        if (!usersUnderAdmin || !Array.isArray(usersUnderAdmin)) return false;
+        return usersUnderAdmin.some(
+          (u) => u.name?.trim().toLowerCase() === reportUser
+        );
+      }
+    });
+
+    setRecords(filtered);
+    setLoading(false);
+  };
 
   // --------------------
   // Reset filters and clear records
@@ -91,51 +92,75 @@ const UserReportB = ({ loggedInUser, allReports, usersUnderAdmin }) => {
   };
 
   // --------------------
-  // Map field keys to readable headers
+  // Full Header Map
   // --------------------
   const headerMap = {
+    // Forecast
     salesForecast: "Sales Forecast",
     strategicRxForecast: "Strategic Rx Forecast",
     focusRxForecast: "Focus Rx Forecast",
+    emergingRxForecast: "Emerging Rx Forecast",
     newProductRxForecast: "New Product Rx Forecast",
     opdRxForecast: "OPD Rx Forecast",
     gpRxForecast: "GP Rx Forecast",
     dischargeRxForecast: "Discharge Rx Forecast",
+    totalRxForecast: "Total Rx Forecast",
 
-    totalStrategicRx: "Total Strategic Rx",
-    totalFocusRx: "Total Focus Rx",
+    // Rx
+    totalStrategicBasketRx: "Total Strategic Basket Rx",
+    totalFocusBasketRx: "Total Focus Basket Rx",
+    totalEmergingBasketRx: "Total Emerging Basket Rx",
     totalNewProductRx: "Total New Product Rx",
-    otherProductsRxSBUB: "Other Products Rx SBUB",
-    totalRxs: "Total Rxs",
+    totalBasketAndNewProductRx: "Total Basket And New Product Rx",
     opdRx: "OPD Rx",
     dischargeRx: "Discharge Rx",
     gpRx: "GP Rx",
+    sbubRxWithoutBasketAndNewProductRx:
+      "SBU-B Rx Without Basket And New Product Rx",
+    totalRxs: "Total Rxs",
 
-    SBUBOrderRouteName: "SBU B Order Route Name",
-    noOfPartySBUBOrderRoute: "No Of Party SBU B Order Route",
-    noOfCollectedOrderSBUB: "No Of Collected Order SBU B",
+    // Orders
+    sbubOrderRouteName: "SBU B Order Route Name",
+    noOfPartySbubOrderRoute: "No Of Party SBU B Order Route",
+    noOfCollectedOrderSbub: "No Of Collected Order SBU B",
     noOfNotGivingOrderParty: "No Of Not Giving Order Party",
     causeOfNotGivingOrder: "Cause Of Not Giving Order",
     marketTotalOrder: "Market Total Order",
-    nexumMUPSOrder: "Nexum MUPS Order",
+
+    // Strategic Basket Orders
+    nexumOrder: "Nexum Order",
+    bactrocinOrder: "Bactrocin Order",
+    voriOrder: "Vori Order",
+    lansoDOrder: "Lanso D Order",
+
+    // Focus Basket Orders
     secloOrder: "Seclo Order",
+    famotackOrder: "Famotack Order",
+    motigutOrder: "Motigut Order",
+
+    // Emerging Basket Orders
+    dermasolNOrder: "Dermasol N Order",
+    intimateOrder: "Intimate Order",
+    vigorexOrder: "Vigorex Order",
+    aliceOrder: "Alice Order",
+    lulitopOrder: "Lulitop Order",
+
+    // New Product Orders
     newProductOrder: "New Product Order",
 
+    // Survey
     rxSendInDIDS: "Rx Send In DIDS",
     writtenRxInSurveyPad: "Written Rx In Survey Pad",
     indoorSurvey: "Indoor Survey",
   };
 
   // --------------------
-  // Identify dynamic fields for table & Excel
+  // Dynamic fields & totals
   // --------------------
   const dynamicFields = records[0]
     ? Object.keys(records[0]).filter((k) => k !== "_id" && k !== "userId")
     : [];
 
-  // --------------------
-  // Identify numeric fields & calculate totals
-  // --------------------
   const numericFields = [];
   const totals = {};
   if (records.length > 0) {
@@ -150,7 +175,7 @@ const UserReportB = ({ loggedInUser, allReports, usersUnderAdmin }) => {
   }
 
   // --------------------
-  // Excel Sections & color codes
+  // Excel Sections
   // --------------------
   const sections = [
     {
@@ -160,44 +185,68 @@ const UserReportB = ({ loggedInUser, allReports, usersUnderAdmin }) => {
         "salesForecast",
         "strategicRxForecast",
         "focusRxForecast",
+        "emergingRxForecast",
         "newProductRxForecast",
         "opdRxForecast",
         "gpRxForecast",
         "dischargeRxForecast",
+        "totalRxForecast",
       ],
     },
-
     {
       title: "Rx Section",
       color: "90EE90",
       fields: [
-        "totalStrategicRx",
-        "totalFocusRx",
+        "totalStrategicBasketRx",
+        "totalFocusBasketRx",
+        "totalEmergingBasketRx",
         "totalNewProductRx",
-        "otherProductsRxSBUB",
-        "totalRxs",
+        "totalBasketAndNewProductRx",
         "opdRx",
         "dischargeRx",
         "gpRx",
+        "sbubRxWithoutBasketAndNewProductRx",
+        "totalRxs",
       ],
     },
-
     {
       title: "Order Section",
       color: "87CEEB",
       fields: [
-        "SBUBOrderRouteName",
-        "noOfPartySBUBOrderRoute",
-        "noOfCollectedOrderSBUB",
+        "sbubOrderRouteName",
+        "noOfPartySbubOrderRoute",
+        "noOfCollectedOrderSbub",
         "noOfNotGivingOrderParty",
         "causeOfNotGivingOrder",
         "marketTotalOrder",
-        "nexumMUPSOrder",
-        "secloOrder",
-        "newProductOrder",
       ],
     },
-
+    {
+      title: "Strategic Basket Orders",
+      color: "FFD700",
+      fields: ["nexumOrder", "bactrocinOrder", "voriOrder", "lansoDOrder"],
+    },
+    {
+      title: "Focus Basket Orders",
+      color: "FFA500",
+      fields: ["secloOrder", "famotackOrder", "motigutOrder"],
+    },
+    {
+      title: "Emerging Basket Orders",
+      color: "90EEFF",
+      fields: [
+        "dermasolNOrder",
+        "intimateOrder",
+        "vigorexOrder",
+        "aliceOrder",
+        "lulitopOrder",
+      ],
+    },
+    {
+      title: "New Product Orders",
+      color: "AFB500",
+      fields: ["newProductOrder"],
+    },
     {
       title: "Survey Section",
       color: "FFB6C1",
@@ -206,16 +255,16 @@ const UserReportB = ({ loggedInUser, allReports, usersUnderAdmin }) => {
   ];
 
   // --------------------
-// Export records to Excel
-// --------------------
-const exportExcel = async () => {
-  if (!records.length) {
-    toast.error("No records available to export"); // custom toast message
-    return;
-  }
+  // Export records to Excel
+  // --------------------
+  const exportExcel = async () => {
+    if (!records.length) {
+      toast.error("No records available to export"); // custom toast message
+      return;
+    }
 
-  const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("Reports");
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Reports");
 
     // --- Section headers ---
     let colIndex = 3;
@@ -308,7 +357,7 @@ const exportExcel = async () => {
 
     // Define text-only fields to skip in totals
     const textFields = [
-      "sbuBOrderRouteName",
+      "sbubOrderRouteName",
       "causeOfNotGivingOrder",
       "indoorSurvey",
     ];
@@ -375,7 +424,13 @@ const exportExcel = async () => {
   // --------------------
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-bold mb-4">Reports ({loggedInUser && loggedInUser.trim() !== "" ? loggedInUser : "All Users"})</h3>
+      <h3 className="text-lg font-bold mb-4">
+        Reports (
+        {loggedInUser && loggedInUser.trim() !== ""
+          ? loggedInUser
+          : "All Users"}
+        )
+      </h3>
 
       <div className="flex flex-wrap gap-3 mb-4">
         {/* Date filters */}

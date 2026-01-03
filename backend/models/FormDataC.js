@@ -1,53 +1,67 @@
 const mongoose = require("mongoose");
 
 const FormDataCSchema = new mongoose.Schema({
+  // ================= User Info =================
   userName: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: Date.now, required: true },
 
-  // Forecast Section
+  // ================= Forecast Section =================
   salesForecast: { type: Number, required: true },
-  colboralDxRxForecast: { type: Number },
-  neuroBRxForecast: { type: Number },
-  zimaxRxForecast: { type: Number },
-  urologicalRxForecast: { type: Number },
-  hormoneRxForecast: { type: Number },
-  torax10RxForecast: { type: Number },
-  opdRxForecast: { type: Number },
-  gpRxForecast: { type: Number },
-  dischargeRxForecast: { type: Number },
+  strategicRxForecast: { type: Number, required: true },
+  focusRxForecast: { type: Number, required: true },
+  emergingRxForecast: { type: Number, required: true },
+  newProductRxForecast: { type: Number, required: true },
+  opdRxForecast: { type: Number, required: true },
+  gpRxForecast: { type: Number, required: true },
+  dischargeRxForecast: { type: Number, required: true },
+  totalRxForecast: { type: Number, required: true },
 
-  // Rx Section
-  colboralDxRx: { type: Number },
-  neuroBRx: { type: Number },
-  zimaxRx: { type: Number },
-  urologicalRx: { type: Number },
-  hormonalRx: { type: Number },
-  aceBrand: { type: Number },
-  totalStrategicRx: { type: Number },
-  otherProductsRxSBUC: { type: Number },
-  totalRxs: { type: Number },
-  opdRx: { type: Number },
-  dischargeRx: { type: Number },
-  gpRx: { type: Number },
+  // ================= Rx Section =================
+  totalStrategicBasketRx: { type: Number, required: true },
+  totalFocusBasketRx: { type: Number, required: true },
+  totalEmergingBasketRx: { type: Number, required: true },
+  totalNewProductRx: { type: Number, required: true },
+  totalBasketAndNewProductRx: { type: Number, required: true },
 
-  // Order Section
-  sbuCOrderRouteName: { type: String },
-  noOfPartySBUCOrderRoute: { type: Number },
-  noOfCollectedOrderSBUC: { type: Number },
-  noOfNotGivingOrderParty: { type: Number },
-  causeOfNotGivingOrder: { type: String },
-  marketTotalOrder: { type: Number },
-  acetab250Order: { type: Number },
-  acetab500Order: { type: Number },
-  torax10TabOrder: { type: Number },
-  amenavirOrder: { type: Number },
-  aceDuoOrder: { type: Number },
-  feozaOrder: { type: Number },
+  opdRx: { type: Number, required: true },
+  dischargeRx: { type: Number, required: true },
+  gpRx: { type: Number, required: true },
+  sbucRxWithoutBasketAndNewProductRx: { type: Number, required: true },
+  totalRxs: { type: Number, required: true },
 
-  // Survey Section
-  rxSendInDIDS: { type: Number },
-  writtenRxInSurveyPad: { type: Number },
-  indoorSurvey: { type: String },
+  // ================= Order Section =================
+  sbucOrderRouteName: { type: String, required: true },
+  noOfPartySbucOrderRoute: { type: Number, required: true },
+  noOfCollectedOrderSbuc: { type: Number, required: true },
+  noOfNotGivingOrderParty: { type: Number, required: true },
+  causeOfNotGivingOrder: { type: String, required: true },
+  marketTotalOrder: { type: Number, required: true },
+
+  // ================= Strategic Basket Orders =================
+  neuroBOrder: { type: Number, required: true },
+  calboralDDXOrder: { type: Number, required: true },
+  toraxOrder: { type: Number, required: true },
+  aceAceplusOrder: { type: Number, required: true },
+
+  // ================= Focus Basket Orders =================
+  zimaxOrder: { type: Number, required: true },
+  calboDOrder: { type: Number, required: true },
+  anadolAnadolplusOrder: { type: Number, required: true },
+
+  // ================= Emerging Basket Orders =================
+  safyronOrder: { type: Number, required: true },
+  dBalanceOrder: { type: Number, required: true },
+  tezoOrder: { type: Number, required: true },
+  contilexContilexTSOrder: { type: Number, required: true },
+  maxrinMaxrinDOrder: { type: Number, required: true },
+
+  // ================= New Product Orders =================
+  newProductOrder: { type: Number, required: true },
+
+  // ================= Survey Section =================
+  rxSendInDIDS: { type: Number, required: true },
+  writtenRxInSurveyPad: { type: Number, required: true },
+  indoorSurvey: { type: String, required: true },
 });
 
 module.exports = mongoose.model("FormDataC", FormDataCSchema);

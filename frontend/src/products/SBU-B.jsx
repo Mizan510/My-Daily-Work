@@ -1,3 +1,4 @@
+// SBUB.jsx
 import React from "react";
 
 const SBUB = ({ FormDataB, handleChange, disabled }) => {
@@ -17,19 +18,60 @@ const SBUB = ({ FormDataB, handleChange, disabled }) => {
     }
   };
 
+  // Handle Enter key to move to next input
+  const handleEnterKey = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      // Don't move to next field if current field is empty
+      if (!e.target.value.trim()) {
+        return;
+      }
+      const form = e.target.form;
+      const inputs = Array.from(form.querySelectorAll("input"));
+      const currentIndex = inputs.indexOf(e.target);
+      const nextIndex = currentIndex + 1;
+      if (nextIndex < inputs.length) {
+        inputs[nextIndex].focus();
+      }
+    }
+  };
+
   const sections = [
     {
       title: "Forecast Section",
       subtitle: "(Send Today's Forecast)",
       colorClass: "border-blue-500 bg-blue-50",
       fields: [
-        { name: "salesForecast", label: "Sales Forecast" },
-        { name: "strategicRxForecast", label: "Strategic Rx Forecast" },
-        { name: "focusRxForecast", label: "Focus Rx Forecast" },
-        { name: "newProductRxForecast", label: "New Product Rx Forecast" },
-        { name: "opdRxForecast", label: "OPD Rx Forecast" },
-        { name: "gpRxForecast", label: "GP Rx Forecast" },
-        { name: "dischargeRxForecast", label: "Discharge Rx Forecast" },
+        { name: "salesForecast", label: "Sales Forecast", required: true },
+        {
+          name: "strategicRxForecast",
+          label: "Strategic Rx Forecast",
+          required: true,
+        },
+        { name: "focusRxForecast", label: "Focus Rx Forecast", required: true },
+        {
+          name: "emergingRxForecast",
+          label: "Emerging Rx Forecast",
+          required: true,
+        },
+        {
+          name: "newProductRxForecast",
+          label: "New Product Rx Forecast",
+          required: true,
+        },
+        { name: "opdRxForecast", label: "OPD Rx Forecast", required: true },
+        { name: "gpRxForecast", label: "GP Rx Forecast", required: true },
+        {
+          name: "dischargeRxForecast",
+          label: "Discharge Rx Forecast",
+          required: true,
+        },
+        {
+          name: "totalRxForecast",
+          label: "Total Rx Forecast",
+          required: true,
+          readOnly: true,
+        },
       ],
     },
     {
@@ -37,14 +79,47 @@ const SBUB = ({ FormDataB, handleChange, disabled }) => {
       subtitle: "(Send actual Rx of Yesterday)",
       colorClass: "border-green-500 bg-green-50",
       fields: [
-        { name: "totalStrategicRx", label: "Total Strategic Rx" },
-        { name: "totalFocusRx", label: "Total Focus Rx" },
-        { name: "totalNewProductRx", label: "Total New Product Rx" },
-        { name: "otherProductsRxSBUB", label: "Other Products Rx SBUB" },
-        { name: "totalRxs", label: "Total Rxs" },
-        { name: "opdRx", label: "OPD Rx" },
-        { name: "dischargeRx", label: "Discharge Rx" },
-        { name: "gpRx", label: "GP Rx" },
+        {
+          name: "totalStrategicBasketRx",
+          label: "Total Strategic Basket Rx",
+          required: true,
+        },
+        {
+          name: "totalFocusBasketRx",
+          label: "Total Focus Basket Rx",
+          required: true,
+        },
+        {
+          name: "totalEmergingBasketRx",
+          label: "Total Emerging Basket Rx",
+          required: true,
+        },
+        {
+          name: "totalNewProductRx",
+          label: "Total New Product Rx",
+          required: true,
+        },
+        {
+          name: "totalBasketAndNewProductRx",
+          label: "Total Basket And New Product Rx",
+          required: true,
+          readOnly: true,
+        },
+        { name: "opdRx", label: "OPD Rx", required: true },
+        { name: "dischargeRx", label: "Discharge Rx", required: true },
+        { name: "gpRx", label: "GP Rx", required: true },
+        {
+          name: "sbubRxWithoutBasketAndNewProductRx",
+          label: "SBU-B Rx Without Basket And New Product Rx",
+          required: true,
+          readOnly: true,
+        },
+        {
+          name: "totalRxs",
+          label: "Total Rxs",
+          required: true,
+          readOnly: true,
+        },
       ],
     },
     {
@@ -53,31 +128,79 @@ const SBUB = ({ FormDataB, handleChange, disabled }) => {
       colorClass: "border-yellow-500 bg-yellow-50",
       fields: [
         {
-          name: "SBUBOrderRouteName",
+          name: "sbubOrderRouteName",
           label: "SBU B Order Route Name",
           type: "text",
+          required: true,
         },
         {
-          name: "noOfPartySBUBOrderRoute",
+          name: "noOfPartySbubOrderRoute",
           label: "No Of Party SBU B Order Route",
+          required: true,
         },
         {
-          name: "noOfCollectedOrderSBUB",
+          name: "noOfCollectedOrderSbub",
           label: "No Of Collected Order SBU B",
+          required: true,
         },
         {
           name: "noOfNotGivingOrderParty",
           label: "No Of Not Giving Order Party",
+          required: true,
+          readOnly: true,
         },
         {
           name: "causeOfNotGivingOrder",
           label: "Cause Of Not Giving Order",
           type: "text",
+          required: true,
         },
-        { name: "marketTotalOrder", label: "Market Total Order" },
-        { name: "nexumMUPSOrder", label: "Nexum MUPS Order" },
-        { name: "secloOrder", label: "Seclo Order" },
-        { name: "newProductOrder", label: "New Product Order" },
+        {
+          name: "marketTotalOrder",
+          label: "Market Total Order",
+          required: true,
+        },
+      ],
+    },
+    {
+      title: "Strategic Basket Orders",
+      subtitle: "",
+      colorClass: "border-indigo-500 bg-indigo-50",
+      fields: [
+        { name: "nexumOrder", label: "Nexum Order", required: true },
+        { name: "bactrocinOrder", label: "Bactrocin Order", required: true },
+        { name: "voriOrder", label: "Vori Order", required: true },
+        { name: "lansoDOrder", label: "Lanso D Order", required: true },
+      ],
+    },
+    {
+      title: "Focus Basket Orders",
+      subtitle: "",
+      colorClass: "border-pink-500 bg-pink-50",
+      fields: [
+        { name: "secloOrder", label: "Seclo Order", required: true },
+        { name: "famotackOrder", label: "Famotack Order", required: true },
+        { name: "motigutOrder", label: "Motigut Order", required: true },
+      ],
+    },
+    {
+      title: "Emerging Basket Orders",
+      subtitle: "",
+      colorClass: "border-teal-500 bg-teal-50",
+      fields: [
+        { name: "dermasolNOrder", label: "Dermasol N Order", required: true },
+        { name: "intimateOrder", label: "Intimate Order", required: true },
+        { name: "vigorexOrder", label: "Vigorex Order", required: true },
+        { name: "aliceOrder", label: "Alice Order", required: true },
+        { name: "lulitopOrder", label: "Lulitop Order", required: true },
+      ],
+    },
+    {
+      title: "New Product Orders",
+      subtitle: "",
+      colorClass: "border-orange-500 bg-orange-50",
+      fields: [
+        { name: "newProductOrder", label: "New Product Order", required: true },
       ],
     },
     {
@@ -85,9 +208,18 @@ const SBUB = ({ FormDataB, handleChange, disabled }) => {
       subtitle: "(Send your Survey Status)",
       colorClass: "border-purple-500 bg-purple-50",
       fields: [
-        { name: "rxSendInDIDS", label: "Rx Send In DIDS" },
-        { name: "writtenRxInSurveyPad", label: "Written Rx In Survey Pad" },
-        { name: "indoorSurvey", label: "Indoor Survey", type: "text" },
+        { name: "rxSendInDIDS", label: "Rx Send In DIDS", required: true },
+        {
+          name: "writtenRxInSurveyPad",
+          label: "Written Rx In Survey Pad",
+          required: true,
+        },
+        {
+          name: "indoorSurvey",
+          label: "Indoor Survey",
+          type: "text",
+          required: true,
+        },
       ],
     },
   ];
@@ -100,25 +232,31 @@ const SBUB = ({ FormDataB, handleChange, disabled }) => {
           className={`p-4 border-l-4 rounded ${section.colorClass}`}
         >
           <h2 className="text-lg font-bold">{section.title}</h2>
-          <p className="text-base font-semibold text-red-600">
-            {section.subtitle}
-          </p>
+          {section.subtitle && (
+            <p className="text-base font-semibold text-red-600">
+              {section.subtitle}
+            </p>
+          )}
 
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             {section.fields.map((field) => (
               <div key={field.name}>
                 <label className="block mb-1 text-sm font-semibold">
-                  {field.label}:
+                  {field.label}{" "}
+                  {field.required && <span className="text-red-600">*</span>}
                 </label>
                 <input
                   type={field.type || "number"}
                   name={field.name}
-                  value={FormDataB[field.name] || ""}
+                  value={FormDataB[field.name] ?? ""}
                   onChange={handleChange}
                   placeholder={field.label}
-                  className={inputClasses}
-                  required
+                  className={`${inputClasses} ${
+                    field.readOnly ? "bg-gray-100" : ""
+                  }`}
                   disabled={disabled}
+                  readOnly={field.readOnly}
+                  required={field.required}
                   onBeforeInput={
                     field.type === "text" ? allowOnlyText : allowOnlyNumbers
                   }

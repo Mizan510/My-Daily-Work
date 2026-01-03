@@ -46,6 +46,58 @@ const InputFormC = () => {
     if (loggedInUser) fetchReports();
   }, [loggedInUser]);
 
+  // Auto-calculate Total Rx Forecast
+  useEffect(() => {
+    const totalRxForecast =
+      Number(FormDataC.opdRxForecast || 0) +
+      Number(FormDataC.gpRxForecast || 0) +
+      Number(FormDataC.dischargeRxForecast || 0);
+    setFormDataC((prev) => ({ ...prev, totalRxForecast }));
+  }, [
+    FormDataC.opdRxForecast,
+    FormDataC.gpRxForecast,
+    FormDataC.dischargeRxForecast,
+  ]);
+
+  // Auto-calculate Total Basket And New Product Rx
+  useEffect(() => {
+    const totalBasketAndNewProductRx =
+      Number(FormDataC.totalStrategicBasketRx || 0) +
+      Number(FormDataC.totalFocusBasketRx || 0) +
+      Number(FormDataC.totalEmergingBasketRx || 0) +
+      Number(FormDataC.totalNewProductRx || 0);
+    setFormDataC((prev) => ({ ...prev, totalBasketAndNewProductRx }));
+  }, [
+    FormDataC.totalStrategicBasketRx,
+    FormDataC.totalFocusBasketRx,
+    FormDataC.totalEmergingBasketRx,
+    FormDataC.totalNewProductRx,
+  ]);
+
+  // Auto-calculate Total Rxs
+  useEffect(() => {
+    const totalRxs =
+      Number(FormDataC.opdRx || 0) +
+      Number(FormDataC.dischargeRx || 0) +
+      Number(FormDataC.gpRx || 0);
+    setFormDataC((prev) => ({ ...prev, totalRxs }));
+  }, [FormDataC.opdRx, FormDataC.dischargeRx, FormDataC.gpRx]);
+
+  // Auto-calculate SBU-C Rx Without Basket And New Product Rx
+  useEffect(() => {
+    const sbucRxWithoutBasketAndNewProductRx =
+      (FormDataC.totalRxs || 0) - (FormDataC.totalBasketAndNewProductRx || 0);
+    setFormDataC((prev) => ({ ...prev, sbucRxWithoutBasketAndNewProductRx }));
+  }, [FormDataC.totalRxs, FormDataC.totalBasketAndNewProductRx]);
+
+  // Auto-calculate Not Giving Order
+  useEffect(() => {
+    const noOfNotGivingOrderParty =
+      Number(FormDataC.noOfPartySbucOrderRoute || 0) -
+      Number(FormDataC.noOfCollectedOrderSbuc || 0);
+    setFormDataC((prev) => ({ ...prev, noOfNotGivingOrderParty }));
+  }, [FormDataC.noOfPartySbucOrderRoute, FormDataC.noOfCollectedOrderSbuc]);
+
   const handleChange = (e) =>
     setFormDataC({ ...FormDataC, [e.target.name]: e.target.value });
 

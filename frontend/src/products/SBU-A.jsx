@@ -1,3 +1,4 @@
+// SBUA.jsx
 import React from "react";
 
 const SBUA = ({ FormDataA, handleChange, disabled }) => {
@@ -6,17 +7,33 @@ const SBUA = ({ FormDataA, handleChange, disabled }) => {
 
   // Helper functions to restrict input
   const allowOnlyNumbers = (e) => {
-    if (!/^[0-9]+$/.test(e.data)) {
-      e.preventDefault();
-    }
+    if (!/^[0-9]+$/.test(e.data)) e.preventDefault();
   };
 
   const allowOnlyText = (e) => {
-    if (/[0-9]/.test(e.data)) {
+    if (/[0-9]/.test(e.data)) e.preventDefault();
+  };
+
+  // Handle Enter key to move to next input
+  const handleEnterKey = (e) => {
+    if (e.key === "Enter") {
       e.preventDefault();
+      // Don't move to next field if current field is empty
+      if (!e.target.value.trim()) {
+        return;
+      }
+      const form = e.target.form;
+      const inputs = Array.from(form.querySelectorAll("input"));
+      const currentIndex = inputs.indexOf(e.target);
+      const nextIndex = currentIndex + 1;
+      if (nextIndex < inputs.length) {
+        inputs[nextIndex].focus();
+      }
     }
   };
+
   const sections = [
+    // ================= Forecast Section =================
     {
       title: "Forecast Section",
       subtitle: "(Send Today's Forecast)",
@@ -25,53 +42,125 @@ const SBUA = ({ FormDataA, handleChange, disabled }) => {
         { name: "salesForecast", label: "Sales Forecast" },
         { name: "strategicRxForecast", label: "Strategic Rx Forecast" },
         { name: "focusRxForecast", label: "Focus Rx Forecast" },
+        { name: "emergingRxForecast", label: "Emerging Rx Forecast" },
         { name: "newProductRxForecast", label: "New Product Rx Forecast" },
         { name: "opdRxForecast", label: "OPD Rx Forecast" },
         { name: "gpRxForecast", label: "GP Rx Forecast" },
         { name: "dischargeRxForecast", label: "Discharge Rx Forecast" },
+        { name: "totalRxForecast", label: "Total Rx Forecast", readOnly: true },
       ],
     },
 
+    // ================= Rx Section =================
     {
       title: "Rx Section",
       subtitle: "(Send actual Rx of Yesterday)",
       colorClass: "border-green-500 bg-green-50",
       fields: [
-        { name: "totalStrategicRx", label: "Total Strategic Rx" },
-        { name: "totalFocusRx", label: "Total Focus Rx" },
+        { name: "totalStrategicBasketRx", label: "Total Strategic Basket Rx" },
+        { name: "totalFocusBasketRx", label: "Total Focus Basket Rx" },
+        { name: "totalEmergingBasketRx", label: "Total Emerging Basket Rx" },
         { name: "totalNewProductRx", label: "Total New Product Rx" },
-        { name: "otherProductsRxSBUA", label: "Other Products Rx SBUA" },
-        { name: "totalRxs", label: "Total Rxs" },
+        {
+          name: "totalBasketAndNewProductRx",
+          label: "Total Basket And New Product Rx",
+          readOnly: true,
+        },
         { name: "opdRx", label: "OPD Rx" },
         { name: "dischargeRx", label: "Discharge Rx" },
         { name: "gpRx", label: "GP Rx" },
+        {
+          name: "sbuaRxWithoutBasketAndNewProductRx",
+          label: "SBU-A Rx Without Basket And New Product Rx",
+          readOnly: true,
+        },
+        { name: "totalRxs", label: "Total Rxs", readOnly: true },
       ],
     },
 
+    // ================= Order Section =================
     {
       title: "Order Section",
       subtitle: "(Send Collected Order Information)",
       colorClass: "border-yellow-500 bg-yellow-50",
       fields: [
-        { name: "SBUAOrderRouteName", label: "SBU A Order Route Name", type: "text" },
-        { name: "noOfPartySBUAOrderRoute", label: "No Of Party SBU A Order Route" },
-        { name: "noOfCollectedOrderSBUA", label: "No Of Collected Order SBU A" },
-        { name: "noOfNotGivingOrderParty", label: "No Of Not Giving Order Party" },
-        { name: "causeOfNotGivingOrder", label: "Cause Of Not Giving Order", type: "text" },
+        {
+          name: "sbuaOrderRouteName",
+          label: "SBU-A Order Route Name",
+          type: "text",
+        },
+        { name: "noOfPartySbuaOrderRoute", label: "No. of Party" },
+        { name: "noOfCollectedOrderSbua", label: "Collected Orders" },
+        {
+          name: "noOfNotGivingOrderParty",
+          label: "Not Giving Order",
+          readOnly: true,
+        },
+        {
+          name: "causeOfNotGivingOrder",
+          label: "Cause of Not Giving Order",
+          type: "text",
+        },
         { name: "marketTotalOrder", label: "Market Total Order" },
-        { name: "cef3DSOrder", label: "Cef-3/DS Order" },
-        { name: "cefotilOrder", label: "Cefotil Order" },
-        { name: "newProductOrder", label: "New Product Order" },
       ],
     },
 
+    // ================= Strategic Basket Orders =================
+    {
+      title: "Strategic Basket",
+      subtitle: "",
+      colorClass: "border-indigo-500 bg-indigo-50",
+      fields: [
+        { name: "cefotilPlusOrder", label: "Cefotil Plus Order" },
+        { name: "toryOrder", label: "Tory Order" },
+        { name: "asyntaMaxOrder", label: "Asynta Max Order" },
+        { name: "filwelGoldOrder", label: "Filwel Gold Order" },
+      ],
+    },
+
+    // ================= Focus Basket Orders =================
+    {
+      title: "Focus Basket",
+      subtitle: "",
+      colorClass: "border-pink-500 bg-pink-50",
+      fields: [
+        { name: "cef3Order", label: "Cef-3/DS Order" },
+        { name: "ceftronOrder", label: "Ceftron Order" },
+        { name: "ambroxOrder", label: "Ambrox Order" },
+        { name: "clofenacOrder", label: "Clofenac Order" },
+      ],
+    },
+
+    // ================= Emerging Basket Orders =================
+    {
+      title: "Emerging Basket",
+      subtitle: "",
+      colorClass: "border-teal-500 bg-teal-50",
+      fields: [
+        { name: "flexiOrder", label: "Flexi Order" },
+        { name: "avasprayOrder", label: "Avaspray Order" },
+        { name: "revocitOrder", label: "Revocit Order" },
+        { name: "norvisOrder", label: "Norvis Order" },
+        { name: "lornoOrder", label: "Lorno Order" },
+      ],
+    },
+
+    // ================= New Product Orders =================
+    {
+      title: "New Product",
+      subtitle: "",
+      colorClass: "border-orange-500 bg-orange-50",
+      fields: [{ name: "newProductOrder", label: "New Product Order" }],
+    },
+
+    // ================= Survey Section =================
     {
       title: "Survey Section",
       subtitle: "(Send your Survey Status)",
       colorClass: "border-purple-500 bg-purple-50",
       fields: [
-        { name: "rxSendInDIDS", label: "Rx Send In DIDS" },
-        { name: "writtenRxInSurveyPad", label: "Written Rx In Survey Pad" },
+        { name: "rxSendInDIDS", label: "Rx Send in DIDS" },
+        { name: "writtenRxInSurveyPad", label: "Written Rx in Survey Pad" },
         { name: "indoorSurvey", label: "Indoor Survey", type: "text" },
       ],
     },
@@ -85,31 +174,33 @@ const SBUA = ({ FormDataA, handleChange, disabled }) => {
           className={`p-4 border-l-4 rounded ${section.colorClass}`}
         >
           <h2 className="text-lg font-bold">{section.title}</h2>
-          <p className="text-base font-semibold text-red-600">
-            {section.subtitle}
-          </p>
+          {section.subtitle && (
+            <p className="text-base font-semibold text-red-600">
+              {section.subtitle}
+            </p>
+          )}
 
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             {section.fields.map((field) => (
               <div key={field.name}>
-                <label
-                  htmlFor={field.name}
-                  className="block mb-1 text-sm font-semibold"
-                >
+                <label className="block mb-1 text-sm font-semibold">
                   {field.label}:
                 </label>
-
                 <input
-                  id={field.name}
                   type={field.type || "number"}
                   name={field.name}
-                  value={FormDataA[field.name] || ""}
+                  value={FormDataA[field.name] ?? ""}
                   onChange={handleChange}
                   placeholder={field.label}
-                  className={inputClasses}
-                  required
+                  className={`${inputClasses} ${
+                    field.readOnly ? "bg-gray-100" : ""
+                  }`}
                   disabled={disabled}
-                  onBeforeInput={field.type === "text" ? allowOnlyText : allowOnlyNumbers}
+                  readOnly={field.readOnly}
+                  onBeforeInput={
+                    field.type === "text" ? allowOnlyText : allowOnlyNumbers
+                  }
+                  onKeyDown={handleEnterKey}
                 />
               </div>
             ))}

@@ -1,4 +1,3 @@
-// InputFormB.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import UserReportB from "../components/UserReportB";
@@ -11,7 +10,7 @@ const InputFormB = () => {
   const [loggedInUser, setLoggedInUser] = useState("");
   const [allReports, setAllReports] = useState([]);
   const [alreadySubmitted, setAlreadySubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); // <-- Loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   // Load logged-in user
   useEffect(() => {
@@ -41,10 +40,61 @@ const InputFormB = () => {
     }
   };
 
-  // inside your component
   useEffect(() => {
     if (loggedInUser) fetchReports();
   }, [loggedInUser]);
+
+  // Auto-calculate Total Rx Forecast
+  useEffect(() => {
+    const totalRxForecast =
+      Number(FormDataB.opdRxForecast || 0) +
+      Number(FormDataB.gpRxForecast || 0) +
+      Number(FormDataB.dischargeRxForecast || 0);
+    setFormDataB((prev) => ({ ...prev, totalRxForecast }));
+  }, [
+    FormDataB.opdRxForecast,
+    FormDataB.gpRxForecast,
+    FormDataB.dischargeRxForecast,
+  ]);
+
+  // Auto-calculate Total Basket And New Product Rx
+  useEffect(() => {
+    const totalBasketAndNewProductRx =
+      Number(FormDataB.totalStrategicBasketRx || 0) +
+      Number(FormDataB.totalFocusBasketRx || 0) +
+      Number(FormDataB.totalEmergingBasketRx || 0) +
+      Number(FormDataB.totalNewProductRx || 0);
+    setFormDataB((prev) => ({ ...prev, totalBasketAndNewProductRx }));
+  }, [
+    FormDataB.totalStrategicBasketRx,
+    FormDataB.totalFocusBasketRx,
+    FormDataB.totalEmergingBasketRx,
+    FormDataB.totalNewProductRx,
+  ]);
+
+  // Auto-calculate Total Rxs
+  useEffect(() => {
+    const totalRxs =
+      Number(FormDataB.opdRx || 0) +
+      Number(FormDataB.dischargeRx || 0) +
+      Number(FormDataB.gpRx || 0);
+    setFormDataB((prev) => ({ ...prev, totalRxs }));
+  }, [FormDataB.opdRx, FormDataB.dischargeRx, FormDataB.gpRx]);
+
+  // Auto-calculate SBU-B Rx Without Basket And New Product Rx
+  useEffect(() => {
+    const sbubRxWithoutBasketAndNewProductRx =
+      (FormDataB.totalRxs || 0) - (FormDataB.totalBasketAndNewProductRx || 0);
+    setFormDataB((prev) => ({ ...prev, sbubRxWithoutBasketAndNewProductRx }));
+  }, [FormDataB.totalRxs, FormDataB.totalBasketAndNewProductRx]);
+
+  // Auto-calculate Not Giving Order
+  useEffect(() => {
+    const noOfNotGivingOrderParty =
+      Number(FormDataB.noOfPartySbubOrderRoute || 0) -
+      Number(FormDataB.noOfCollectedOrderSbub || 0);
+    setFormDataB((prev) => ({ ...prev, noOfNotGivingOrderParty }));
+  }, [FormDataB.noOfPartySbubOrderRoute, FormDataB.noOfCollectedOrderSbub]);
 
   const handleChange = (e) =>
     setFormDataB({ ...FormDataB, [e.target.name]: e.target.value });
@@ -57,21 +107,35 @@ const InputFormB = () => {
       return;
     }
 
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
 
     try {
       await axios.post("https://my-daily-work.onrender.com/api/form-datab", {
         ...FormDataB,
         userName: loggedInUser,
       });
-      toast.success("Report submitted successfully!"); // <-- Custom toast
-      setFormDataB(initialState); // Reset the form
+      toast.success("Report submitted successfully!");
+      setFormDataB(initialState);
       fetchReports();
     } catch (err) {
       console.error(err);
-      toast.error("Failed to submit report"); // <-- Custom toast
+      toast.error("Failed to submit report");
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
+    }
+  };
+
+  // --- NEW: Handle Enter key like Tab ---
+  const handleEnterKey = (e) => {
+    if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+      e.preventDefault();
+      // Don't move to next field if current field is empty
+      if (!e.target.value.trim()) {
+        return;
+      }
+      const form = e.target.form;
+      const index = Array.prototype.indexOf.call(form.elements, e.target);
+      form.elements[index + 1]?.focus();
     }
   };
 
@@ -85,7 +149,12 @@ const InputFormB = () => {
         </p>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {/* --- Attach Enter handler on the form --- */}
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4"
+        onKeyDown={handleEnterKey}
+      >
         <input
           type="text"
           name="userName"
@@ -97,11 +166,10 @@ const InputFormB = () => {
         <SBUB
           FormDataB={FormDataB}
           handleChange={handleChange}
-          disabled={alreadySubmitted || isLoading} // disable inputs while loading
+          disabled={alreadySubmitted || isLoading}
         />
 
         <div className="flex gap-2 flex-wrap">
-          {/* Submit Button with Spinner */}
           <button
             type="submit"
             disabled={alreadySubmitted || isLoading}

@@ -66,59 +66,71 @@ const UserReportC = ({ loggedInUser, allReports, usersUnderAdmin }) => {
     setRecords([]);
   };
   // --------------------
-  // Map field keys to readable headers
+  // Header Map
   // --------------------
   const headerMap = {
+    // Forecast
     salesForecast: "Sales Forecast",
-    colboralDxRxForecast: "Colboral-D/Dx Rx Forecast",
-    neuroBRxForecast: "Neuro-B Rx Forecast",
-    zimaxRxForecast: "Zimax Rx Forecast",
-    urologicalRxForecast: "Urological Rx Forecast",
-    hormoneRxForecast: "Hormone Rx Forecast",
-    torax10RxForecast: "Torax 10 Rx Forecast",
+    strategicRxForecast: "Strategic Rx Forecast",
+    focusRxForecast: "Focus Rx Forecast",
+    emergingRxForecast: "Emerging Rx Forecast",
+    newProductRxForecast: "New Product Rx Forecast",
     opdRxForecast: "OPD Rx Forecast",
     gpRxForecast: "GP Rx Forecast",
     dischargeRxForecast: "Discharge Rx Forecast",
-    colboralDxRx: "Colboral-D/Dx Rx",
-    neuroBRx: "Neuro-B Rx",
-    zimaxRx: "Zimax Rx",
-    urologicalRx: "Urological Rx",
-    hormonalRx: "Hormonal Rx",
-    aceBrand: "Ace Brand",
-    totalStrategicRx: "Total Strategic Rx",
-    otherProductsRxSBUC: "Other Products Rx SBU-C",
-    totalRxs: "Total Rxs",
+    totalRxForecast: "Total Rx Forecast",
+
+    // Rx
+    totalStrategicBasketRx: "Total Strategic Basket Rx",
+    totalFocusBasketRx: "Total Focus Basket Rx",
+    totalEmergingBasketRx: "Total Emerging Basket Rx",
+    totalNewProductRx: "Total New Product Rx",
+    totalBasketAndNewProductRx: "Total Basket & New Product Rx",
     opdRx: "OPD Rx",
     dischargeRx: "Discharge Rx",
     gpRx: "GP Rx",
-    sbuCOrderRouteName: "SBU-C Order Route Name",
-    noOfPartySBUCOrderRoute: "No# of Party SBU-C Order Route",
-    noOfCollectedOrderSBUC: "No# of Collected Order SBU-C",
-    noOfNotGivingOrderParty: "No# of Not Giving Order Party",
-    causeOfNotGivingOrder: "Cause of Not Giving Order",
-    marketTotalOrder: "Market Total Order",
-    acetab250Order: "Ace tab 250 Order",
-    acetab500Order: "Ace tab 500 Order",
-    torax10TabOrder: "Torax 10 Tab Order",
-    amenavirOrder: "Amenavir Order",
-    aceDuoOrder: "AceDuo Order",
-    feozaOrder: "Feoza Order",
+    sbucRxWithoutBasketAndNewProductRx: "SBU C Rx Without Basket & New Product",
+    totalRxs: "Total Rxs",
 
+    // Order
+    sbucOrderRouteName: "SBU C Order Route Name",
+    noOfPartySbucOrderRoute: "No Of Party SBU C Order Route",
+    noOfCollectedOrderSbuc: "No Of Collected Order SBU C",
+    noOfNotGivingOrderParty: "No Of Not Giving Order Party",
+    causeOfNotGivingOrder: "Cause Of Not Giving Order",
+    marketTotalOrder: "Market Total Order",
+
+    // Strategic Basket Orders
+    neuroBOrder: "Neuro-B Order",
+    calboralDDXOrder: "Calboral DDX Order",
+    toraxOrder: "Torax Order",
+    aceAceplusOrder: "Ace Aceplus Order",
+
+    // Focus Basket Orders
+    zimaxOrder: "Zimax Order",
+    calboDOrder: "Calbo-D Order",
+    anadolAnadolplusOrder: "Anadol / Anadol Plus Order",
+
+    // Emerging Basket Orders
+    safyronOrder: "Safyron Order",
+    dBalanceOrder: "DBalance Order",
+    tezoOrder: "Tezo Order",
+    contilexContilexTSOrder: "Contilex / Contilex TS Order",
+    maxrinMaxrinDOrder: "Maxrin / Maxrin D Order",
+
+    // New Product Orders
+    newProductOrder: "New Product Order",
+
+    // Survey
     rxSendInDIDS: "Rx Send In DIDS",
     writtenRxInSurveyPad: "Written Rx In Survey Pad",
     indoorSurvey: "Indoor Survey",
   };
 
-  // --------------------
-  // Identify dynamic fields for table & Excel
-  // --------------------
   const dynamicFields = records[0]
     ? Object.keys(records[0]).filter((k) => k !== "_id" && k !== "userId")
     : [];
 
-  // --------------------
-  // Identify numeric fields & calculate totals
-  // --------------------
   const numericFields = [];
   const totals = {};
   if (records.length > 0) {
@@ -133,7 +145,7 @@ const UserReportC = ({ loggedInUser, allReports, usersUnderAdmin }) => {
   }
 
   // --------------------
-  // Excel Sections & color codes
+  // Excel Sections
   // --------------------
   const sections = [
     {
@@ -141,52 +153,74 @@ const UserReportC = ({ loggedInUser, allReports, usersUnderAdmin }) => {
       color: "FFFACD",
       fields: [
         "salesForecast",
-        "colboralDxRxForecast",
-        "neuroBRxForecast",
-        "zimaxRxForecast",
-        "urologicalRxForecast",
-        "hormoneRxForecast",
-        "torax10RxForecast",
+        "strategicRxForecast",
+        "focusRxForecast",
+        "emergingRxForecast",
+        "newProductRxForecast",
         "opdRxForecast",
         "gpRxForecast",
         "dischargeRxForecast",
+        "totalRxForecast",
       ],
     },
     {
       title: "Rx Section",
       color: "90EE90",
       fields: [
-        "colboralDxRx",
-        "neuroBRx",
-        "zimaxRx",
-        "urologicalRx",
-        "hormonalRx",
-        "aceBrand",
-        "totalStrategicRx",
-        "otherProductsRxSBUC",
-        "totalRxs",
+        "totalStrategicBasketRx",
+        "totalFocusBasketRx",
+        "totalEmergingBasketRx",
+        "totalNewProductRx",
+        "totalBasketAndNewProductRx",
         "opdRx",
         "dischargeRx",
         "gpRx",
+        "sbucRxWithoutBasketAndNewProductRx",
+        "totalRxs",
       ],
     },
     {
       title: "Order Section",
       color: "87CEEB",
       fields: [
-        "sbuCOrderRouteName",
-        "noOfPartySBUCOrderRoute",
-        "noOfCollectedOrderSBUC",
+        "sbucOrderRouteName",
+        "noOfPartySbucOrderRoute",
+        "noOfCollectedOrderSbuc",
         "noOfNotGivingOrderParty",
         "causeOfNotGivingOrder",
         "marketTotalOrder",
-        "acetab250Order",
-        "acetab500Order",
-        "torax10TabOrder",
-        "amenavirOrder",
-        "aceDuoOrder",
-        "feozaOrder",
       ],
+    },
+    {
+      title: "Strategic Basket Orders",
+      color: "FFD700",
+      fields: [
+        "neuroBOrder",
+        "calboralDDXOrder",
+        "toraxOrder",
+        "aceAceplusOrder",
+      ],
+    },
+    {
+      title: "Focus Basket Orders",
+      color: "FFA500",
+      fields: ["zimaxOrder", "calboDOrder", "anadolAnadolplusOrder"],
+    },
+    {
+      title: "Emerging Basket Orders",
+      color: "90EEFF",
+      fields: [
+        "safyronOrder",
+        "dBalanceOrder",
+        "tezoOrder",
+        "contilexContilexTSOrder",
+        "maxrinMaxrinDOrder",
+      ],
+    },
+    {
+      title: "New Product Orders",
+      color: "AFB500",
+      fields: ["newProductOrder"],
     },
     {
       title: "Survey Section",
@@ -196,16 +230,16 @@ const UserReportC = ({ loggedInUser, allReports, usersUnderAdmin }) => {
   ];
 
   // --------------------
-// Export records to Excel
-// --------------------
-const exportExcel = async () => {
-  if (!records.length) {
-    toast.error("No records available to export"); // custom toast message
-    return;
-  }
+  // Export records to Excel
+  // --------------------
+  const exportExcel = async () => {
+    if (!records.length) {
+      toast.error("No records available to export"); // custom toast message
+      return;
+    }
 
-  const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("Reports");
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Reports");
 
     // Section headers
     let colIndex = 3;
@@ -294,7 +328,7 @@ const exportExcel = async () => {
     });
 
     const textFields = [
-      "SBUCOrderRouteName",
+      "sbucOrderRouteName",
       "causeOfNotGivingOrder",
       "indoorSurvey",
     ];

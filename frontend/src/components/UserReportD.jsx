@@ -92,58 +92,84 @@ const UserReportD = ({ loggedInUser, allReports, usersUnderAdmin }) => {
   };
 
   // --------------------
-  // Map field keys to readable headers
+  // Header mapping
   // --------------------
   const headerMap = {
+    // Forecast
     salesForecast: "Sales Forecast",
     strategicRxForecast: "Strategic Rx Forecast",
     focusRxForecast: "Focus Rx Forecast",
+    emergingRxForecast: "Emerging Rx Forecast",
     newProductRxForecast: "New Product Rx Forecast",
     opdRxForecast: "OPD Rx Forecast",
     gpRxForecast: "GP Rx Forecast",
     dischargeRxForecast: "Discharge Rx Forecast",
+    totalRxForecast: "Total Rx Forecast",
 
-    totalStrategicRx: "Total Strategic Rx",
-    totalFocusRx: "Total Focus Rx",
+    // Rx
+    totalStrategicBasketRx: "Total Strategic Basket Rx",
+    totalFocusBasketRx: "Total Focus Basket Rx",
+    totalEmergingBasketRx: "Total Emerging Basket Rx",
     totalNewProductRx: "Total New Product Rx",
-    otherProductsRxSBUD: "Other Products Rx SBUD",
-    totalRxs: "Total Rxs",
+    totalBasketAndNewProductRx: "Total Basket And New Product Rx",
     opdRx: "OPD Rx",
     dischargeRx: "Discharge Rx",
     gpRx: "GP Rx",
+    sbudRxWithoutBasketAndNewProductRx:
+      "SBU-D Rx Without Basket And New Product Rx",
+    totalRxs: "Total Rxs",
 
-    SBUDOrderRouteName: "SBU D Order Route Name",
-    noOfPartySBUDOrderRoute: "No Of Party SBU D Order Route",
-    noOfCollectedOrderSBUD: "No Of Collected Order SBU D",
+    // Orders
+    sbudOrderRouteName: "SBU D Order Route Name",
+    noOfPartySbudOrderRoute: "No Of Party SBU D Order Route",
+    noOfCollectedOrderSbud: "No Of Collected Order SBU D",
     noOfNotGivingOrderParty: "No Of Not Giving Order Party",
     causeOfNotGivingOrder: "Cause Of Not Giving Order",
     marketTotalOrder: "Market Total Order",
+
+    // Strategic Basket Orders
+    fexoOrder: "Fexo Order",
+    moxaclavOrder: "Moxaclav Order",
     monteneOrder: "Montene Order",
+    deflacortOrder: "Deflacort Order",
+    glympaOrder: "Glympa Order",
+
+    // Focus Basket Orders
+    cometOrder: "Comet Order",
+    compridOrder: "Comprid Order",
+    secrinOrder: "Secrin Order",
+    ticametOrder: "Ticamet Order",
+    viglimetOrder: "Viglimet Order",
+
+    // Emerging Basket Orders
     emjardOrder: "Emjard Order",
+    emjardMOrder: "Emjard-M Order",
+    bilistaOrder: "Bilista Order",
+    liglimetOrder: "Liglimet Order",
+    zolivoxOrder: "Zolivox Order",
+
+    // New Product
     newProductOrder: "New Product Order",
 
+    // Survey
     rxSendInDIDS: "Rx Send In DIDS",
     writtenRxInSurveyPad: "Written Rx In Survey Pad",
     indoorSurvey: "Indoor Survey",
   };
 
   // --------------------
-  // Identify dynamic fields for table & Excel
+  // Dynamic fields & totals
   // --------------------
   const dynamicFields = records[0]
     ? Object.keys(records[0]).filter((k) => k !== "_id" && k !== "userId")
     : [];
 
-  // --------------------
-  // Identify numeric fields & calculate totals
-  // --------------------
   const numericFields = [];
   const totals = {};
   if (records.length > 0) {
     dynamicFields.forEach((f) => {
-      if (records.every((r) => !isNaN(parseFloat(r[f])) && r[f] !== null)) {
+      if (records.every((r) => !isNaN(parseFloat(r[f])) && r[f] !== null))
         numericFields.push(f);
-      }
     });
     numericFields.forEach((f) => {
       totals[f] = records.reduce((sum, r) => sum + parseFloat(r[f] || 0), 0);
@@ -151,7 +177,7 @@ const UserReportD = ({ loggedInUser, allReports, usersUnderAdmin }) => {
   }
 
   // --------------------
-  // Excel Sections & color codes
+  // Excel sections
   // --------------------
   const sections = [
     {
@@ -161,44 +187,80 @@ const UserReportD = ({ loggedInUser, allReports, usersUnderAdmin }) => {
         "salesForecast",
         "strategicRxForecast",
         "focusRxForecast",
+        "emergingRxForecast",
         "newProductRxForecast",
         "opdRxForecast",
         "gpRxForecast",
         "dischargeRxForecast",
+        "totalRxForecast",
       ],
     },
-
     {
       title: "Rx Section",
       color: "90EE90",
       fields: [
-        "totalStrategicRx",
-        "totalFocusRx",
+        "totalStrategicBasketRx",
+        "totalFocusBasketRx",
+        "totalEmergingBasketRx",
         "totalNewProductRx",
-        "otherProductsRxSBUD",
-        "totalRxs",
+        "totalBasketAndNewProductRx",
         "opdRx",
         "dischargeRx",
         "gpRx",
+        "sbudRxWithoutBasketAndNewProductRx",
+        "totalRxs",
       ],
     },
-
     {
       title: "Order Section",
       color: "87CEEB",
       fields: [
-        "SBUDOrderRouteName",
-        "noOfPartySBUDOrderRoute",
-        "noOfCollectedOrderSBUD",
+        "sbudOrderRouteName",
+        "noOfPartySbudOrderRoute",
+        "noOfCollectedOrderSbud",
         "noOfNotGivingOrderParty",
         "causeOfNotGivingOrder",
         "marketTotalOrder",
-        "monteneOrder",
-        "emjardOrder",
-        "newProductOrder",
       ],
     },
-
+    {
+      title: "Strategic Basket Orders",
+      color: "FFD700",
+      fields: [
+        "fexoOrder",
+        "moxaclavOrder",
+        "monteneOrder",
+        "deflacortOrder",
+        "glympaOrder",
+      ],
+    },
+    {
+      title: "Focus Basket Orders",
+      color: "FFA500",
+      fields: [
+        "cometOrder",
+        "compridOrder",
+        "secrinOrder",
+        "ticametOrder",
+        "viglimetOrder",
+      ],
+    },
+    {
+      title: "Emerging Basket Orders",
+      color: "ADFF2F",
+      fields: [
+        "emjardOrder",
+        "emjardMOrder",
+        "bilistaOrder",
+        "liglimetOrder",
+        "zolivoxOrder",
+      ],
+    },
+    {
+      title: "New Product Orders",
+      color: "AFB500",
+      fields: ["newProductOrder"],
+    },
     {
       title: "Survey Section",
       color: "FFB6C1",
@@ -309,7 +371,7 @@ const UserReportD = ({ loggedInUser, allReports, usersUnderAdmin }) => {
 
     // Define text-only fields to skip in totals
     const textFields = [
-      "sbuDOrderRouteName",
+      "sbudOrderRouteName",
       "causeOfNotGivingOrder",
       "indoorSurvey",
     ];

@@ -66,31 +66,65 @@ const UserReportA = ({ loggedInUser, allReports, usersUnderAdmin }) => {
     setRecords([]);
   };
 
+  // -----------------------------
+  // Full Header Map as per product list
+  // -----------------------------
   const headerMap = {
+    // Forecast
     salesForecast: "Sales Forecast",
     strategicRxForecast: "Strategic Rx Forecast",
     focusRxForecast: "Focus Rx Forecast",
+    emergingRxForecast: "Emerging Rx Forecast",
     newProductRxForecast: "New Product Rx Forecast",
     opdRxForecast: "OPD Rx Forecast",
     gpRxForecast: "GP Rx Forecast",
     dischargeRxForecast: "Discharge Rx Forecast",
-    totalStrategicRx: "Total Strategic Rx",
-    totalFocusRx: "Total Focus Rx",
+    totalRxForecast: "Total Rx Forecast",
+
+    // Rx
+    totalStrategicBasketRx: "Total Strategic Basket Rx",
+    totalFocusBasketRx: "Total Focus Basket Rx",
+    totalEmergingBasketRx: "Total Emerging Basket Rx",
     totalNewProductRx: "Total New Product Rx",
-    otherProductsRxSBUA: "Other Products Rx SBUA",
-    totalRxs: "Total Rxs",
+    totalBasketAndNewProductRx: "Total Basket And New Product Rx",
     opdRx: "OPD Rx",
     dischargeRx: "Discharge Rx",
     gpRx: "GP Rx",
-    SBUAOrderRouteName: "SBU A Order Route Name",
-    noOfPartySBUAOrderRoute: "No Of Party SBU A Order Route",
-    noOfCollectedOrderSBUA: "No Of Collected Order SBU A",
+    sbuaRxWithoutBasketAndNewProductRx:
+      "SBU-A Rx Without Basket And New Product Rx",
+    totalRxs: "Total Rxs",
+
+    // Orders
+    sbuaOrderRouteName: "SBU A Order Route Name",
+    noOfPartySbuaOrderRoute: "No Of Party SBU A Order Route",
+    noOfCollectedOrderSbua: "No Of Collected Order SBU A",
     noOfNotGivingOrderParty: "No Of Not Giving Order Party",
     causeOfNotGivingOrder: "Cause Of Not Giving Order",
     marketTotalOrder: "Market Total Order",
-    cef3DSOrder: "Cef-3/DS Order",
-    cefotilOrder: "Cefotil Order",
+
+    // Strategic Basket Orders
+    cefotilPlusOrder: "Cefotil Plus Order",
+    toryOrder: "Tory Order",
+    asyntaMaxOrder: "Asynta Max Order",
+    filwelGoldOrder: "Filwel Gold Order",
+
+    // Focus Basket Orders
+    cef3Order: "Cef-3 Order",
+    ceftronOrder: "Ceftron Order",
+    ambroxOrder: "Ambrox Order",
+    clofenacOrder: "Clofenac Order",
+
+    // Emerging Basket Orders
+    flexiOrder: "Flexi Order",
+    avasprayOrder: "Avaspray Order",
+    revocitOrder: "Revocit Order",
+    norvisOrder: "Norvis Order",
+    lornoOrder: "Lorno Order",
+
+    // New Product Orders
     newProductOrder: "New Product Order",
+
+    // Survey
     rxSendInDIDS: "Rx Send In DIDS",
     writtenRxInSurveyPad: "Written Rx In Survey Pad",
     indoorSurvey: "Indoor Survey",
@@ -121,40 +155,72 @@ const UserReportA = ({ loggedInUser, allReports, usersUnderAdmin }) => {
         "salesForecast",
         "strategicRxForecast",
         "focusRxForecast",
+        "emergingRxForecast",
         "newProductRxForecast",
         "opdRxForecast",
         "gpRxForecast",
         "dischargeRxForecast",
+        "totalRxForecast",
       ],
     },
     {
       title: "Rx Section",
       color: "90EE90",
       fields: [
-        "totalStrategicRx",
-        "totalFocusRx",
+        "totalStrategicBasketRx",
+        "totalFocusBasketRx",
+        "totalEmergingBasketRx",
         "totalNewProductRx",
-        "otherProductsRxSBUA",
-        "totalRxs",
+        "totalBasketAndNewProductRx",
         "opdRx",
         "dischargeRx",
         "gpRx",
+        "sbuaRxWithoutBasketAndNewProductRx",
+        "totalRxs",
       ],
     },
     {
       title: "Order Section",
       color: "87CEEB",
       fields: [
-        "SBUAOrderRouteName",
-        "noOfPartySBUAOrderRoute",
-        "noOfCollectedOrderSBUA",
+        "sbuaOrderRouteName",
+        "noOfPartySbuaOrderRoute",
+        "noOfCollectedOrderSbua",
         "noOfNotGivingOrderParty",
         "causeOfNotGivingOrder",
         "marketTotalOrder",
-        "cef3DSOrder",
-        "cefotilOrder",
-        "newProductOrder",
       ],
+    },
+    {
+      title: "Strategic Basket Orders",
+      color: "FFD700",
+      fields: [
+        "cefotilPlusOrder",
+        "toryOrder",
+        "asyntaMaxOrder",
+        "filwelGoldOrder",
+      ],
+    },
+    {
+      title: "Focus Basket Orders",
+      color: "FFA500",
+      fields: ["cef3Order", "ceftronOrder", "ambroxOrder", "clofenacOrder"],
+    },
+    {
+      title: "Emerging Basket Orders",
+      color: "90EEFF",
+      fields: [
+        "flexiOrder",
+        "avasprayOrder",
+        "revocitOrder",
+        "norvisOrder",
+        "lornoOrder",
+      ],
+    },
+    {
+      title: "New Product Orders",
+      color: "AFB500",
+      fields: ["newProductOrder"],
     },
     {
       title: "Survey Section",
@@ -262,7 +328,7 @@ const UserReportA = ({ loggedInUser, allReports, usersUnderAdmin }) => {
     });
 
     const textFields = [
-      "SBUAOrderRouteName",
+      "sbuaOrderRouteName",
       "causeOfNotGivingOrder",
       "indoorSurvey",
     ];
