@@ -22,10 +22,6 @@ const SBUC = ({ FormDataC, handleChange, disabled }) => {
   const handleEnterKey = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      // Don't move to next field if current field is empty
-      if (!e.target.value.trim()) {
-        return;
-      }
       const form = e.target.form;
       const inputs = Array.from(form.querySelectorAll("input"));
       const currentIndex = inputs.indexOf(e.target);
@@ -33,16 +29,6 @@ const SBUC = ({ FormDataC, handleChange, disabled }) => {
       if (nextIndex < inputs.length) {
         inputs[nextIndex].focus();
       }
-    }
-  };
-
-  // Handle blur to prevent leaving empty required fields
-  const handleBlur = (e) => {
-    if (!e.target.readOnly && !e.target.value.trim()) {
-      // For mobile, if empty, refocus after a short delay to allow keyboard to hide/show
-      setTimeout(() => {
-        e.target.focus();
-      }, 100);
     }
   };
 
@@ -209,7 +195,6 @@ const SBUC = ({ FormDataC, handleChange, disabled }) => {
                     field.type === "text" ? allowOnlyText : allowOnlyNumbers
                   }
                   onKeyDown={handleEnterKey}
-                  onBlur={handleBlur}
                 />
               </div>
             ))}
