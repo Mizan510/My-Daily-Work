@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // ✅ Loading state
   const navigate = useNavigate();
@@ -23,6 +24,13 @@ export default function Login() {
       }
     }
     checkAdmin();
+
+    // Load remembered email
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    if (rememberedEmail) {
+      setForm((prev) => ({ ...prev, email: rememberedEmail }));
+      setRememberMe(true);
+    }
   }, []);
 
   // HANDLE INPUT
@@ -71,6 +79,13 @@ export default function Login() {
       // ------------------------------
       if (res.ok) {
         localStorage.setItem("user", JSON.stringify(data.user));
+
+        // Handle remember me
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", form.email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
 
         // ⭐ ROLE-BASED REDIRECT
         if (data.user.role === "admin") {
@@ -141,6 +156,20 @@ export default function Login() {
               onChange={handleChange}
               required
             />
+          </div>
+
+          {/* Remember Me */}
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="mr-2"
+            />
+            <label htmlFor="rememberMe" className="text-gray-700 font-medium">
+              Remember Me
+            </label>
           </div>
 
           {/* SUBMIT BUTTON WITH SPINNER */}

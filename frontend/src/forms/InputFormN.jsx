@@ -107,6 +107,89 @@ const InputFormN = () => {
       return;
     }
 
+    // Check for empty fields
+    const formElements = e.target.elements;
+    let firstEmptyField = null;
+    for (let element of formElements) {
+      if (
+        element.tagName === "INPUT" &&
+        element.type !== "submit" &&
+        !element.readOnly &&
+        !element.value.trim()
+      ) {
+        firstEmptyField = element;
+        break;
+      }
+    }
+    if (firstEmptyField) {
+      toast.error("Please fill all required fields!");
+      firstEmptyField.focus();
+      firstEmptyField.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    // Check for negative values
+    const numericFields = [
+      "salesForecast",
+      "strategicRxForecast",
+      "focusRxForecast",
+      "emergingRxForecast",
+      "newProductRxForecast",
+      "opdRxForecast",
+      "gpRxForecast",
+      "dischargeRxForecast",
+      "totalRxForecast",
+      "totalStrategicBasketRx",
+      "totalFocusBasketRx",
+      "totalEmergingBasketRx",
+      "totalNewProductRx",
+      "totalBasketAndNewProductRx",
+      "opdRx",
+      "dischargeRx",
+      "gpRx",
+      "sbunRxWithoutBasketAndNewProductRx",
+      "totalRxs",
+      "noOfPartySbunOrderRoute",
+      "noOfCollectedOrderSbun",
+      "noOfNotGivingOrderParty",
+      "marketTotalOrder",
+      "entacydPlusOrder",
+      "probioOrder",
+      "flemoOrder",
+      "resQOrder",
+      "ceevitOrder",
+      "alatrolOrder",
+      "adovasOrder",
+      "gilobaOrder",
+      "trumegaOrder",
+      "maximilkOrder",
+      "biopremOrder",
+      "newProductOrder",
+      "rxSendInDIDS",
+      "writtenRxInSurveyPad",
+    ];
+    let firstNegativeField = null;
+    for (let field of numericFields) {
+      const value = Number(FormDataN[field]);
+      if (!isNaN(value) && value < 0) {
+        firstNegativeField = field;
+        break;
+      }
+    }
+    if (firstNegativeField) {
+      toast.error("Negative values are not allowed!");
+      const negativeInput = document.querySelector(
+        `input[name="${firstNegativeField}"]`
+      );
+      if (negativeInput) {
+        negativeInput.focus();
+        negativeInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        negativeInput.style.borderColor = "red";
+        setTimeout(() => (negativeInput.style.borderColor = ""), 3000);
+      }
+      return;
+    }
+
     setIsLoading(true); // Start loading
 
     try {

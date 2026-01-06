@@ -36,6 +36,16 @@ const SBUB = ({ FormDataB, handleChange, disabled }) => {
     }
   };
 
+  // Handle blur to prevent leaving empty required fields
+  const handleBlur = (e) => {
+    if (!e.target.readOnly && !e.target.value.trim()) {
+      // For mobile, if empty, refocus after a short delay to allow keyboard to hide/show
+      setTimeout(() => {
+        e.target.focus();
+      }, 100);
+    }
+  };
+
   const sections = [
     {
       title: "Forecast Section",
@@ -260,6 +270,8 @@ const SBUB = ({ FormDataB, handleChange, disabled }) => {
                   onBeforeInput={
                     field.type === "text" ? allowOnlyText : allowOnlyNumbers
                   }
+                  onKeyDown={handleEnterKey}
+                  onBlur={handleBlur}
                 />
               </div>
             ))}

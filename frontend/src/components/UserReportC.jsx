@@ -8,6 +8,7 @@ const UserReportC = ({ loggedInUser, allReports, usersUnderAdmin }) => {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [loading, setLoading] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
 
   const formatDate = (dateStr) => {
     const d = new Date(dateStr);
@@ -238,69 +239,38 @@ const UserReportC = ({ loggedInUser, allReports, usersUnderAdmin }) => {
       return;
     }
 
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Reports");
+    setExportLoading(true);
 
-    // Section headers
-    let colIndex = 3;
-    sections.forEach((sec) => {
-      const startCol = colIndex;
-      const endCol = colIndex + sec.fields.length - 1;
-      if (sec.fields.length > 1) worksheet.mergeCells(1, startCol, 1, endCol);
-      const cell = worksheet.getCell(1, startCol);
-      cell.value = sec.title;
-      cell.font = { bold: true };
-      cell.alignment = { horizontal: "center", vertical: "middle" };
-      cell.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: sec.color },
-      };
-      colIndex = endCol + 1;
-    });
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Reports");
 
-    const headerRowValues = [
-      "Created At",
-      "User Name",
-      ...sections.flatMap((sec) => sec.fields.map((f) => headerMap[f] || f)),
-    ];
-    worksheet.addRow(headerRowValues);
-
-    worksheet.getRow(2).eachCell((cell, colNumber) => {
-      let fillColor = colNumber <= 2 ? "ADD8E6" : "FFFFFF";
-      let tmpIndex = 3;
+      // Section headers
+      let colIndex = 3;
       sections.forEach((sec) => {
-        if (colNumber >= tmpIndex && colNumber < tmpIndex + sec.fields.length)
-          fillColor = sec.color;
-        tmpIndex += sec.fields.length;
+        const startCol = colIndex;
+        const endCol = colIndex + sec.fields.length - 1;
+        if (sec.fields.length > 1) worksheet.mergeCells(1, startCol, 1, endCol);
+        const cell = worksheet.getCell(1, startCol);
+        cell.value = sec.title;
+        cell.font = { bold: true };
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: sec.color },
+        };
+        colIndex = endCol + 1;
       });
-      cell.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: fillColor },
-      };
-      cell.font = { bold: true };
-      cell.alignment = {
-        horizontal: "center",
-        vertical: "middle",
-        wrapText: true,
-      };
-      cell.border = {
-        top: { style: "thin" },
-        bottom: { style: "thin" },
-        left: { style: "thin" },
-        right: { style: "thin" },
-      };
-    });
 
-    records.forEach((r) => {
-      const rowValues = [
-        formatDate(r.createdAt),
-        r.userName,
-        ...sections.flatMap((sec) => sec.fields.map((f) => r[f] ?? "")),
+      const headerRowValues = [
+        "Created At",
+        "User Name",
+        ...sections.flatMap((sec) => sec.fields.map((f) => headerMap[f] || f)),
       ];
-      const row = worksheet.addRow(rowValues);
-      row.eachCell((cell, colNumber) => {
+      worksheet.addRow(headerRowValues);
+
+      worksheet.getRow(2).eachCell((cell, colNumber) => {
         let fillColor = colNumber <= 2 ? "ADD8E6" : "FFFFFF";
         let tmpIndex = 3;
         sections.forEach((sec) => {
@@ -313,6 +283,7 @@ const UserReportC = ({ loggedInUser, allReports, usersUnderAdmin }) => {
           pattern: "solid",
           fgColor: { argb: fillColor },
         };
+        cell.font = { bold: true };
         cell.alignment = {
           horizontal: "center",
           vertical: "middle",
@@ -325,61 +296,100 @@ const UserReportC = ({ loggedInUser, allReports, usersUnderAdmin }) => {
           right: { style: "thin" },
         };
       });
-    });
 
-    const textFields = [
-      "sbucOrderRouteName",
-      "causeOfNotGivingOrder",
-      "indoorSurvey",
-    ];
-    const totalRowValues = [
-      "Total",
-      "",
-      ...sections.flatMap((sec) =>
-        sec.fields.map((f) =>
-          textFields.includes(f)
-            ? ""
-            : numericFields.includes(f)
-            ? totals[f]
-            : ""
-        )
-      ),
-    ];
-    const totalRow = worksheet.addRow(totalRowValues);
-    totalRow.eachCell((cell) => {
-      cell.font = { bold: true };
-      cell.alignment = {
-        horizontal: "center",
-        vertical: "middle",
-        wrapText: true,
-      };
-      cell.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "D3D3D3" },
-      };
-      cell.border = {
-        top: { style: "thin" },
-        bottom: { style: "thin" },
-        left: { style: "thin" },
-        right: { style: "thin" },
-      };
-    });
+      records.forEach((r) => {
+        const rowValues = [
+          formatDate(r.createdAt),
+          r.userName,
+          ...sections.flatMap((sec) => sec.fields.map((f) => r[f] ?? "")),
+        ];
+        const row = worksheet.addRow(rowValues);
+        row.eachCell((cell, colNumber) => {
+          let fillColor = colNumber <= 2 ? "ADD8E6" : "FFFFFF";
+          let tmpIndex = 3;
+          sections.forEach((sec) => {
+            if (
+              colNumber >= tmpIndex &&
+              colNumber < tmpIndex + sec.fields.length
+            )
+              fillColor = sec.color;
+            tmpIndex += sec.fields.length;
+          });
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: fillColor },
+          };
+          cell.alignment = {
+            horizontal: "center",
+            vertical: "middle",
+            wrapText: true,
+          };
+          cell.border = {
+            top: { style: "thin" },
+            bottom: { style: "thin" },
+            left: { style: "thin" },
+            right: { style: "thin" },
+          };
+        });
+      });
 
-    worksheet.getColumn(1).width = 22;
-    worksheet.getColumn(2).width = 25;
-    for (let i = 3; i <= worksheet.columns.length; i++)
-      worksheet.getColumn(i).width = 12;
-    worksheet.getRow(1).height = 35;
-    worksheet.getRow(2).height = 65;
-    for (let i = 3; i <= worksheet.rowCount; i++)
-      worksheet.getRow(i).height = 25;
+      const textFields = [
+        "sbucOrderRouteName",
+        "causeOfNotGivingOrder",
+        "indoorSurvey",
+      ];
+      const totalRowValues = [
+        "Total",
+        "",
+        ...sections.flatMap((sec) =>
+          sec.fields.map((f) =>
+            textFields.includes(f)
+              ? ""
+              : numericFields.includes(f)
+              ? totals[f]
+              : ""
+          )
+        ),
+      ];
+      const totalRow = worksheet.addRow(totalRowValues);
+      totalRow.eachCell((cell) => {
+        cell.font = { bold: true };
+        cell.alignment = {
+          horizontal: "center",
+          vertical: "middle",
+          wrapText: true,
+        };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "D3D3D3" },
+        };
+        cell.border = {
+          top: { style: "thin" },
+          bottom: { style: "thin" },
+          left: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
 
-    const buffer = await workbook.xlsx.writeBuffer();
-    saveAs(
-      new Blob([buffer]),
-      `report_${loggedInUser}_${start}_to_${end}.xlsx`
-    );
+      worksheet.getColumn(1).width = 22;
+      worksheet.getColumn(2).width = 25;
+      for (let i = 3; i <= worksheet.columns.length; i++)
+        worksheet.getColumn(i).width = 12;
+      worksheet.getRow(1).height = 35;
+      worksheet.getRow(2).height = 65;
+      for (let i = 3; i <= worksheet.rowCount; i++)
+        worksheet.getRow(i).height = 25;
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      saveAs(
+        new Blob([buffer]),
+        `report_${loggedInUser}_${start}_to_${end}.xlsx`
+      );
+    } finally {
+      setExportLoading(false);
+    }
   };
 
   // --------------------
@@ -430,9 +440,36 @@ const UserReportC = ({ loggedInUser, allReports, usersUnderAdmin }) => {
           </button>
           <button
             onClick={exportExcel}
-            className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+            disabled={exportLoading}
+            className={`px-4 py-2 rounded text-white flex items-center justify-center gap-2 ${
+              exportLoading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700"
+            }`}
           >
-            Export Excel
+            {exportLoading && (
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+            )}
+            {exportLoading ? "Exporting..." : "Export Excel"}
           </button>
         </div>
       </div>
